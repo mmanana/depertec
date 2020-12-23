@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<cable_library>
+  <cable name="RZ_0.6/1.0_kV_4x10_CU">
+    <Rdc>1.8323<!--[ohms/km]--></Rdc>
+    <T0>20.0<!--[celsius degrees]--></T0>
+    <Di>0.0<!--[mm]--></Di>
+    <Do>1.784<!--[mm]--></Do>
+  </cable>
+  <cable name="RZ_0.6/1.0_kV_4x16_CU">
+    <Rdc>1.15<!--[ohms/km]--></Rdc>
+    <T0>20.0<!--[celsius degrees]--></T0>
+    <Di>0.0<!--[mm]--></Di>
+    <Do>2.256<!--[mm]--></Do>
+  </cable>
+</cable_library>
