@@ -4,7 +4,7 @@
     File name: cable.py
     Author: Mario Mañana, David Carriles, GTEA
     Date created: 28 Nov 2020
-    Date last modified: 14 Dec 2020
+    Date last modified: 31 Dec 2020
     Python Version: 3.8
     
     Library for Line Loss Analysis and Calculation of Electric Power Systems
@@ -34,11 +34,19 @@ class Conductor:
     # Rac0 # AC resistance of conductor at the temperature T0 [Ohms/km]
     # Rac1 # AC resistance of conductor at the temperature T1 [Ohms/km]
     
-    version = r'Line Loss Analysis Library. v0.04'
-    X1: float
-    X2: float
+    version = r'Line Loss Analysis Library. v0.05'
+    Rdc: float
+    T0: float
+    T1: float
     K1: float
+    X1: float
+    Do: float
+    Di: float
+    f: float
     K2: float
+    X2: float
+    I: float
+    S: float
     Rac0: float
     Rac1: float
     NameConductor: str
@@ -101,6 +109,12 @@ class Conductor:
     def fget_t1( self):
         return( self.T1)
     
+    def fget_rac0( self):
+        return( self.Rac0)
+    
+    def fget_rac1( self):
+        return( self.Rac1)
+    
     def fget_version( self):
         return( self.version)
     
@@ -108,6 +122,7 @@ class Conductor:
         self.X1 = ((self.Do+2*self.Di)/(self.Do+self.Di))*0.01*np.sqrt((8* \
                     np.pi*self.f*(self.Do-self.Di))/(self.Rdc*(self.Do+self.Di)))
         self.X2 = self.I/self.S
+        print( str(self.X2))
         self.K1 = 0.99609+0.018578*self.X1-0.030263*self.X1*self.X1+0.020735* \
                     self.X1*self.X1*self.X1
         self.K2 = 0.99947+0.028895*self.X2-0.005934*self.X2*self.X2+0.00042259* \
