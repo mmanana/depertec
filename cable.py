@@ -152,4 +152,5 @@ class Conductor:
                         self.Di = float(child.text)
                     elif child.tag == "Do":
                         self.Do = float(child.text)
-                                        
+                    elif child.tag == "S":
+                        self.S = float(child.text)
