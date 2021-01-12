@@ -1,24 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <cable_library>
-  <cable name="RZ_0.6/1.0_kV_4x10_CU">
+  <cable name="RZ_0.6/1KV4x10_CU">
     <Rdc>1.8323<!--[ohms/km]--></Rdc>
     <T0>20.0<!--[celsius degrees]--></T0>
     <Di>0.0<!--[mm]--></Di>
     <Do>1.784<!--[mm]--></Do>
-	<S>10.0<!--[mm]--></S>
+    <S>10.0<!--[mm]--></S>
   </cable>
-  <cable name="RZ_0.6/1.0_kV_4x16_CU">
+  <cable name="RZ_0.6/1KV4x16_CU">
     <Rdc>1.15<!--[ohms/km]--></Rdc>
     <T0>20.0<!--[celsius degrees]--></T0>
     <Di>0.0<!--[mm]--></Di>
     <Do>2.256<!--[mm]--></Do>
-	<S>16.0<!--[mm]--></S>
+    <S>16.0<!--[mm]--></S>
   </cable>
-  <cable name="RV_0.6/1.0_kV_4x50_AL">
+  <cable name="RV_0.6/1KV4x50_AL">
     <Rdc>0.386<!--[ohms/km]--></Rdc>
     <T0>20.0<!--[celsius degrees]--></T0>
     <Di>0.0<!--[mm]--></Di>
     <Do>3.990<!--[mm]--></Do>
-	<S>50.0<!--[mm]--></S>
+    <S>50.0<!--[mm]--></S>
   </cable>
 </cable_library>

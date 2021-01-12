@@ -33,6 +33,7 @@ class Conductor:
     # S   # Cross-sectional area of conductor [mm2]
     # Rac0 # AC resistance of conductor at the temperature T0 [Ohms/km]
     # Rac1 # AC resistance of conductor at the temperature T1 [Ohms/km]
+    # Found_cable # 0: default. 1: NameConductor found in the .xml library
     
     version = r'Line Loss Analysis Library. v0.05'
     Rdc: float
@@ -51,6 +52,7 @@ class Conductor:
     Rac1: float
     NameConductor: str
     LibraryConductor = r'cable_library.xml'
+    Found_cable: int
     
     
     def __init__( self, Rdc=0.2, Do=10, Di=1, f=50, I=0, S=10, T0=20.0, T1=20.0, alpha=0.004):
@@ -133,6 +135,7 @@ class Conductor:
     
     def fload_library( self, NameConductor):
         self.NameConductor = NameConductor
+        self.Found_cable = 0
         
         cable_library = ET.ElementTree( file=r'./cable_library.xml')
         cable_library_root = cable_library.getroot()
@@ -140,6 +143,7 @@ class Conductor:
         for children in cable_library_root:
         #print( childrem.tag, childrem.attrib)
             if children.attrib["name"]==self.NameConductor:
+                self.Found_cable = 1
                 print("+++++++++++++++++++++++++++++++")
                 print(children.attrib["name"])
                 for child in children:
@@ -154,3 +158,4 @@ class Conductor:
                         self.Do = float(child.text)
                     elif child.tag == "S":
                         self.S = float(child.text)
+        return self.Found_cable
