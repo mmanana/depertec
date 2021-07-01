@@ -1,24 +1,1221 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <cable_library>
-  <cable name="RZ_0.6/1KV4x10_CU">
+  <cable name="RZ_4X10_CU||RZ_0.6/1KV4X10_CU">
     <Rdc>1.8323<!--[ohms/km]--></Rdc>
     <T0>20.0<!--[celsius degrees]--></T0>
     <Di>0.0<!--[mm]--></Di>
     <Do>1.784<!--[mm]--></Do>
-    <S>10.0<!--[mm]--></S>
+    <S>10.0<!--[mm2]--></S>
   </cable>
-  <cable name="RZ_0.6/1KV4x16_CU">
-    <Rdc>1.15<!--[ohms/km]--></Rdc>
+  <cable name="AL-4X50||RV_0.6/1KV4X50_AL">
+    <Rdc>0.645<!--[ohms/km]--></Rdc>
     <T0>20.0<!--[celsius degrees]--></T0>
     <Di>0.0<!--[mm]--></Di>
-    <Do>2.256<!--[mm]--></Do>
-    <S>16.0<!--[mm]--></S>
+    <Do>3.989<!--[mm]--></Do>
+    <S>50.0<!--[mm2]--></S>
   </cable>
-  <cable name="RV_0.6/1KV4x50_AL">
-    <Rdc>0.386<!--[ohms/km]--></Rdc>
-    <T0>20.0<!--[celsius degrees]--></T0>
-    <Di>0.0<!--[mm]--></Di>
-    <Do>3.990<!--[mm]--></Do>
-    <S>50.0<!--[mm]--></S>
+  <cable name="MIXTO||MIXTO">
+	<Rdc>0.0<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.642<!--[mm]--></Do>
+	<S>100.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_50||IARR_3X50+1X25_CU">
+	<Rdc>0.36<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.989<!--[mm]--></Do>
+	<S>50.0<!--[mm2]--></S>
+  </cable>
+  <cable name="VCU3.5X150||RRV_0.6/1KV3X150+1X70_CU">
+	<Rdc>0.124<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-70||CU_-_70">
+	<Rdc>0.268<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>4.72<!--[mm]--></Do>
+	<S>70.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ-150_AL2||3X150+95_AL">
+	<Rdc>0.206<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ-70_AL||RZ_0.6/1KV3X70AL+54.6_AL">
+	<Rdc>0.443<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>4.72<!--[mm]--></Do>
+	<S>70.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2(RZ_95AL)||2(3X95/54.6)_AL">
+	<Rdc>0.16<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ-50_AL||RZ_0.6/1KV3X50AL+54.6_AL">
+	<Rdc>0.641<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.989<!--[mm]--></Do>
+	<S>50.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_4X10||IARR_4X10_CU">
+	<Rdc>1.79<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.784<!--[mm]--></Do>
+	<S>10.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_6||IARR_4X6_CU">
+	<Rdc>3.08<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.382<!--[mm]--></Do>
+	<S>6.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-95||CU_-_95">
+	<Rdc>0.196<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-35||CU_-_35">
+	<Rdc>0.524<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.338<!--[mm]--></Do>
+	<S>35.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_150||IARR_3X150+1X80_CU">
+	<Rdc>0.126<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.569<!--[mm]--></Do>
+	<S>180.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-70||AL_-_70">
+	<Rdc>0.443<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>4.72<!--[mm]--></Do>
+	<S>70.0<!--[mm2]--></S>
+  </cable>
+  <cable name="VCU_240||RV_3(1X240)+1X240_CU">
+	<Rdc>0.074<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU_3.5X80||RRB_0.6/1KV3X80+1X40_CU">
+	<Rdc>0.229<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.046<!--[mm]--></Do>
+	<S>80.0<!--[mm2]--></S>
+  </cable>
+  <cable name="VCU_3.5X35||RRV_0.6/1KV3X35+1X16_CU">
+	<Rdc>0.524<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.338<!--[mm]--></Do>
+	<S>35.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ-95_AL||RZ_0.6/1KV3X95AL+54.6_AL">
+	<Rdc>0.32<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL_150||RV_0.6/1KV3X150+1X95_AL">
+	<Rdc>0.206<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2(VCU_240)||RV_3(2X240)+1X240_CU">
+	<Rdc>0.037<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_40||IARR_3X40+1X25_CU">
+	<Rdc>0.447<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.568<!--[mm]--></Do>
+	<S>40.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_2X10_CU||RZ_0.6/1KV2X10_CU">
+	<Rdc>1.83<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.784<!--[mm]--></Do>
+	<S>10.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-63||CU_-_63">
+	<Rdc>0.2792<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>4.478<!--[mm]--></Do>
+	<S>63.0<!--[mm2]--></S>
+  </cable>
+  <cable name="4L40||L40__4L40">
+	<Rdc>0.665<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.568<!--[mm]--></Do>
+	<S>40.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_2X10||IARR_2X10_CU-UNI">
+	<Rdc>1.79<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.784<!--[mm]--></Do>
+	<S>10.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_16||IARR_3X6+1X10_CU">
+	<Rdc>1.146<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.185<!--[mm]--></Do>
+	<S>15.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-150||AL_-_150">
+	<Rdc>0.206<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_4X16_AL||RZ_0.6/1KV4X16AL">
+	<Rdc>1.91<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.257<!--[mm]--></Do>
+	<S>16.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_2X16_CU||RZ_0.6/1KV2X16_CU">
+	<Rdc>1.15<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.257<!--[mm]--></Do>
+	<S>16.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU_3.5X90||RRB_0.6/1KV3X90+1X50_CU">
+	<Rdc>0.193<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.352<!--[mm]--></Do>
+	<S>90.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_80||IARR_3X80+1X40_CU">
+	<Rdc>0.232<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.046<!--[mm]--></Do>
+	<S>80.0<!--[mm2]--></S>
+  </cable>
+  <cable name="VCU_3.5X50||RRV_0.6/1KV3X50+1X25_CU">
+	<Rdc>0.387<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.989<!--[mm]--></Do>
+	<S>50.0<!--[mm2]--></S>
+  </cable>
+  <cable name="VCU_3.5X25||RRV_0.6/1KV3X25+1X16_CU">
+	<Rdc>0.727<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_100||IARR_3X100+1X50_CU">
+	<Rdc>0.186<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.642<!--[mm]--></Do>
+	<S>100.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU_3.5X70||RRB_0.6/1KV3X70+1X35_CU">
+	<Rdc>0.268<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>4.72<!--[mm]--></Do>
+	<S>70.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU_3.5X50||RRB_0.6/1KV3X50+1X25_CU">
+	<Rdc>0.374<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.989<!--[mm]--></Do>
+	<S>50.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU_3.5X10||RRB0.6/1KV3*10+1*6_CU">
+	<Rdc>1.89<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.784<!--[mm]--></Do>
+	<S>10.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU_4X6.3||RRB_0.6/1KV4X6.3_CU">
+	<Rdc>2.89<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.416<!--[mm]--></Do>
+	<S>6.3<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_2X25_AL||RZ_0.6/1KV2X25AL">
+	<Rdc>1.2<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="4L80||4L80_AL-UNI">
+	<Rdc>0.385<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.046<!--[mm]--></Do>
+	<S>80.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU_3.5X16||RRB_0.6/1KV3X16+1X10_CU">
+	<Rdc>1.14<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.257<!--[mm]--></Do>
+	<S>16.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU_3.5X25||RRB_0.6/1KV3X25+1X16_CU">
+	<Rdc>0.732<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU3.5X100||RRB_0.6/1KV3X100+1X50_CU">
+	<Rdc>0.184<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.642<!--[mm]--></Do>
+	<S>100.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ150+RZ95||3X150/95+3X95/54.6_AL">
+	<Rdc>0.263<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU3.5X125||RRB_0.6/1KV3X125+1X63_CU">
+	<Rdc>0.147<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.308<!--[mm]--></Do>
+	<S>125.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU3.5X150||RRB_0.6/1KV3X150+1X70_CU">
+	<Rdc>0.124<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-25||AL_-_25">
+	<Rdc>1.2<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-200||CU_-_200">
+	<Rdc>0.0879<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.979<!--[mm]--></Do>
+	<S>200.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_2X16_AL||RZ_0.6/1KV2X16AL">
+	<Rdc>1.91<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.257<!--[mm]--></Do>
+	<S>16.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-50||AL_-_50">
+	<Rdc>0.641<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.989<!--[mm]--></Do>
+	<S>50.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_2X6_CU||RZ_0.6/1KV2X6_CU">
+	<Rdc>3.08<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.382<!--[mm]--></Do>
+	<S>6.0<!--[mm2]--></S>
+  </cable>
+  <cable name="4(VCU_240)||RV_3(4X240)+2X240_CU">
+	<Rdc>0.0185<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU3.5X315||RRB_0.6/1KV3X315+1X160_CU">
+	<Rdc>0.058<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>10.013<!--[mm]--></Do>
+	<S>315.0<!--[mm2]--></S>
+  </cable>
+  <cable name="VCU_3.5X95||RRV_0.6/1KV3X95+1X50_CU">
+	<Rdc>0.193<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-120||CU_-_120">
+	<Rdc>0.15<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.18<!--[mm]--></Do>
+	<S>120.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU3.5X250||RRB_0.6/1KV3X250+1X125_CU">
+	<Rdc>0.074<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.921<!--[mm]--></Do>
+	<S>250.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-185||CU_-_185">
+	<Rdc>0.0972<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.674<!--[mm]--></Do>
+	<S>185.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU3.5X200||RRB_0.6/1KV3X200+1X100_CU">
+	<Rdc>0.089<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.979<!--[mm]--></Do>
+	<S>200.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU_3.5X40||RRB_0.6/1KV3X40+1X25_CU">
+	<Rdc>0.469<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.568<!--[mm]--></Do>
+	<S>40.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2(VCU_95)||RRV_2(3X95+1X50)_CU">
+	<Rdc>0.0965<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="VCU_3.5X10||RRV_0.6/1KV3X10+1X6_CU">
+	<Rdc>1.83<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.784<!--[mm]--></Do>
+	<S>10.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-4X25||RV_0.6/1KV_4X25_AL-UNI">
+	<Rdc>1.18<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ-35_AL||RZ_0.6/1KV3X35AL+54.6_AL">
+	<Rdc>0.868<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.338<!--[mm]--></Do>
+	<S>35.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-240||AL_-_240">
+	<Rdc>0.122<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="3L110+L80||L110_3L110+L80">
+	<Rdc>0.246<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.917<!--[mm]--></Do>
+	<S>110.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-35||AL_-_35">
+	<Rdc>0.868<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.338<!--[mm]--></Do>
+	<S>35.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-400||CU_-_400">
+	<Rdc>0.048<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>11.284<!--[mm]--></Do>
+	<S>400.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-160||CU_-_160">
+	<Rdc>0.1099<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.136<!--[mm]--></Do>
+	<S>160.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-40||AL_-_40">
+	<Rdc>0.6641<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.568<!--[mm]--></Do>
+	<S>40.0<!--[mm2]--></S>
+  </cable>
+  <cable name="VCU_3.5X70||RRV_0.6/1KV3X70+1X35_CU">
+	<Rdc>0.268<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>4.72<!--[mm]--></Do>
+	<S>70.0<!--[mm2]--></S>
+  </cable>
+  <cable name="VCU_3.5X16||RRV_0.6/1KV3X16+1X10_CU">
+	<Rdc>1.15<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.257<!--[mm]--></Do>
+	<S>16.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-2X50||RV_0.6/1KV_2X50_AL">
+	<Rdc>0.641<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.989<!--[mm]--></Do>
+	<S>50.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-240||CU_-_240">
+	<Rdc>0.076<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="3L80+L40||L80__3L80+L40">
+	<Rdc>0.385<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.046<!--[mm]--></Do>
+	<S>80.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-120||AL_-_120">
+	<Rdc>0.253<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.18<!--[mm]--></Do>
+	<S>120.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ-120_AL||RZ_0.6/1KV3X120AL+21.6_AC">
+	<Rdc>0.253<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.18<!--[mm]--></Do>
+	<S>120.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2L40||2L40_AL-UNI">
+	<Rdc>0.665<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.568<!--[mm]--></Do>
+	<S>40.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AEREO||CONDUCTOR_AEREO">
+	<Rdc>1.91<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.642<!--[mm]--></Do>
+	<S>100.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-125||CU_-_125">
+	<Rdc>0.147<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.308<!--[mm]--></Do>
+	<S>125.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-250||CU_-_250">
+	<Rdc>0.0703<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.921<!--[mm]--></Do>
+	<S>250.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-300||CU_-_300">
+	<Rdc>0.06<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>9.772<!--[mm]--></Do>
+	<S>300.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-315||CU_-_315">
+	<Rdc>0.06<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>10.013<!--[mm]--></Do>
+	<S>315.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-500||CU_-_500">
+	<Rdc>0.0366<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>12.616<!--[mm]--></Do>
+	<S>500.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-6||AL_-_6">
+	<Rdc>4.71<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.382<!--[mm]--></Do>
+	<S>6.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-63||AL_-_63">
+	<Rdc>0.448<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>4.478<!--[mm]--></Do>
+	<S>63.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-10||AL_-_10">
+	<Rdc>2.96<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.784<!--[mm]--></Do>
+	<S>10.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-100||AL_-_100">
+	<Rdc>0.2826<!--SIEMPRE DEBAJO DEL OTRO AL-10, SINO HABRA ERROR AL BUSCARLOS [ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.642<!--[mm]--></Do>
+	<S>100.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-125||AL_-_125">
+	<Rdc>0.226<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.308<!--[mm]--></Do>
+	<S>125.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-16||AL_-_16">
+	<Rdc>1.91<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.257<!--[mm]--></Do>
+	<S>16.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-160||AL_-_160">
+	<Rdc>0.202<!--SIEMPRE DEBAJO DEL OTRO AL-16, SINO HABRA ERROR AL BUSCARLOS[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.136<!--[mm]--></Do>
+	<S>160.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-185||AL_-_185">
+	<Rdc>0.1529<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.674<!--[mm]--></Do>
+	<S>185.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-200||AL_-_200">
+	<Rdc>0.153<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.979<!--[mm]--></Do>
+	<S>200.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-300||AL_-_300">
+	<Rdc>0.1<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>9.772<!--[mm]--></Do>
+	<S>300.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-315||AL_-_315">
+	<Rdc>0.0897<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>10.013<!--[mm]--></Do>
+	<S>315.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-400||AL_-_400">
+	<Rdc>0.0758<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>11.284<!--[mm]--></Do>
+	<S>400.0<!--[mm2]--></S>
+  </cable>
+  <cable name="L-28||L_-_28">
+	<Rdc>1.02<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.985<!--[mm]--></Do>
+	<S>28.0<!--[mm2]--></S>
+  </cable>
+  <cable name="L-56||L_-_56">
+	<Rdc>0.5247<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>4.222<!--[mm]--></Do>
+	<S>56.0<!--[mm2]--></S>
+  </cable>
+  <cable name="L-70||L_-_70">
+	<Rdc>0.443<!--[ohms/km]--></Rdc>
+	<T0>20<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>4.72<!--[mm]--></Do>
+	<S>70<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_2*10+10||IARR_2X10+10_CU-UNI">
+	<Rdc>1.79<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.784<!--[mm]--></Do>
+	<S>10.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_2*16+10||IARR_2X16+10_CU-UNI">
+	<Rdc>1.14<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.257<!--[mm]--></Do>
+	<S>16.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2L40+L40||3L40__2L40+L40">
+	<Rdc>0.665<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.568<!--[mm]--></Do>
+	<S>40.0<!--[mm2]--></S>
+  </cable>
+  <cable name="P3(100X10)||PLETINA_3(100X10)+50X5_CU">
+	<Rdc>0.0178<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.784<!--[mm]--></Do>
+	<S>10.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-180||AL_180">
+	<Rdc>0.161<!--[ohms/km]--></Rdc>
+	<T0>20<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.569<!--[mm]--></Do>
+	<S>180<!--[mm2]--></S>
+  </cable>
+  <cable name="2(VCU_150)||RRV_2(3(1X150))_CU">
+	<Rdc>0.062<!--[ohms/km]--></Rdc>
+	<T0>20<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150<!--[mm2]--></S>
+  </cable>
+  <cable name="2(AL_150)||RV_2(3(1X150)+1X95)_AL-UNI">
+	<Rdc>0.103<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU_4X2.5||RRB_0.6/1KV4X2.5_CU">
+	<Rdc>7.0<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>0.892<!--[mm]--></Do>
+	<S>2.5<!--[mm2]--></S>
+  </cable>
+  <cable name="BCU_4X4||RRB_0.6/1KV4X4_CU">
+	<Rdc>4.29<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>1.128<!--[mm]--></Do>
+	<S>4.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_25||IARR_3X25+1X16_CU">
+	<Rdc>0.737<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2(BCU_250)||2X3.5X250_CU_RRB">
+	<Rdc>0.037<!--SIEMPRE DEBAJO DEL OTRO CU-25, SINO HABRA ERROR AL BUSCARLOS [ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.921<!--[mm]--></Do>
+	<S>250.0<!--[mm2]--></S>
+  </cable>
+  <cable name="4(BCU_250)||4X3.5X250_CU_RRB">
+	<Rdc>0.0185<!--SIEMPRE DEBAJO DEL OTRO CU-25, SINO HABRA ERROR AL BUSCARLOS [ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.921<!--[mm]--></Do>
+	<S>250.0<!--[mm2]--></S>
+  </cable>
+  <cable name="NN_070||RRV_2X3.5X250_CU+3X95+1X50_CU">
+	<Rdc>0.0247<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.921<!--[mm]--></Do>
+	<S>250.0<!--[mm2]--></S>
+  </cable>
+  <cable name="3(VCU_240)||RV_3(3X240)+1X240_CU">
+	<Rdc>0.0247<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU_120||RV_3X120+1X90_CU">
+	<Rdc>0.15<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.18<!--[mm]--></Do>
+	<S>120.0<!--[mm2]--></S>
+  </cable>
+  <cable name="SUBT||CONDUCTOR_SUBTERRANEO">
+	<Rdc>0.32<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.642<!--[mm]--></Do>
+	<S>100.0<!--[mm2]--></S>
+  </cable>
+  <cable name="3(AL_185)||RV_3(3X185+1X185)_AL-TRI">
+	<Rdc>0.0537<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.569<!--[mm]--></Do>
+	<S>180.0<!--[mm2]--></S>
+  </cable>
+  <cable name="4(BCU_100)||4(RRB_0.6/1KV_3X100+1X50)CU">
+	<Rdc>0.046<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.642<!--[mm]--></Do>
+	<S>100.0<!--[mm2]--></S>
+  </cable>
+  <cable name="3(BCU_150)||3(RRB_0.6/1KV_3X150+1X70)_CU">
+	<Rdc>0.0413<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="4(BCU_150)||4(RRB_0.6/1KV_3X150+1X70)_CU">
+	<Rdc>0.031<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="6(BCU_150)||6(RRB_0.6/1KV_3X150+1X70)_CU">
+	<Rdc>0.0207<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2(BCU_200)||2(RRB_0.6/1KV_3X200+1X100)_CU">
+	<Rdc>0.0445<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.979<!--[mm]--></Do>
+	<S>200.0<!--[mm2]--></S>
+  </cable>
+  <cable name="3(BCU_200)||3(RRB_0.6/1KV_3X200+1X100)_CU">
+	<Rdc>0.0297<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.979<!--[mm]--></Do>
+	<S>200.0<!--[mm2]--></S>
+  </cable>
+  <cable name="3(RRB-185)||3(RRB_-_185)">
+	<Rdc>0.033<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.674<!--[mm]--></Do>
+	<S>185.0<!--[mm2]--></S>
+  </cable>
+  <cable name="3(BCU_100)||3(RRB_0.6/1KV_3X100+1X50)_CU">
+	<Rdc>0.0613<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.642<!--[mm]--></Do>
+	<S>100.0<!--[mm2]--></S>
+  </cable>
+  <cable name="4(BCU_200)||4(RRB_0.6/1KV_3X200+1X100)_CU">
+	<Rdc>0.0223<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.979<!--[mm]--></Do>
+	<S>200.0<!--[mm2]--></S>
+  </cable>
+  <cable name="3(AL_150)||3(RV_0.6/1KV_3X150+1X95)_AL">
+	<Rdc>0.0687<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2(BCU_100)||2(RRB_0.6/1KV3X100+1X50_CU)">
+	<Rdc>0.092<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.642<!--[mm]--></Do>
+	<S>100.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2(BCU_315)||2(RRB_0.6/1KV3X315+1X160_CU)">
+	<Rdc>0.029<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>10.013<!--[mm]--></Do>
+	<S>315.0<!--[mm2]--></S>
+  </cable>
+  <cable name="8(VCU_240)||RV_8(3X240)+1X150_CU">
+	<Rdc>0.0093<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="4(AL_150)||4(RV0.6/1KV3X150+1X95)AL">
+	<Rdc>0.0515<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RRB-95||RRB_-_95">
+	<Rdc>0.193<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RRB-160||RRB_-_160">
+	<Rdc>0.112<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.136<!--[mm]--></Do>
+	<S>160.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2(RRB-160)||2(RRB_-_160)">
+	<Rdc>0.056<!--SIEMPRE DEBAJO DEL OTRO RRB-160, SINO HABRA ERROR AL BUSCARLOS [ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>7.136<!--[mm]--></Do>
+	<S>160.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RRB-240||RRB_-_240">
+	<Rdc>0.075<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RRB-400||RRB_-_400">
+	<Rdc>0.0045<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>11.284<!--[mm]--></Do>
+	<S>400.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_2X25_CU||RRB_0.6/1KV3X10+1X6_CU">
+	<Rdc>0.727<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="4X16_CU||4X16_CU">
+	<Rdc>1.15<!--[ohms/km]--></Rdc>
+	<T0>20<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.257<!--[mm]--></Do>
+	<S>16<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_4X16_CU||RZ_0.6/1KV4X16_CU">
+	<Rdc>1.15<!--SIEMPRE DEBAJO DEL OTRO 4X16_CU, SINO HABRA ERROR AL BUSCARLOS [ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.257<!--[mm]--></Do>
+	<S>16.0<!--[mm2]--></S>
+  </cable>
+  <cable name="TRENZADO||CABLE_TRENZADO">
+	<Rdc>1.91<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.642<!--[mm]--></Do>
+	<S>100.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2RZ-150_AL||RZ_0.6/1KV_2(3X150/95AL+22.00AC">
+	<Rdc>0.103<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="DESCONOCI.||CONDUCTOR_DESCONOCIDO">
+	<Rdc>0.0<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.642<!--[mm]--></Do>
+	<S>100.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2(AL240)||RV_2(3(1X240)+1X240)_AL-UNI">
+	<Rdc>0.0<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RV_1X150||RV_1*150">
+	<Rdc>0.206<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RV_1X240||RV_1*240">
+	<Rdc>0.125<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RV_1X50||RV_1*50">
+	<Rdc>0.641<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.989<!--[mm]--></Do>
+	<S>50.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RV_1X95||RV_1*95">
+	<Rdc>0.32<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_3X150+8||RZ_0.6/1_KV_3X150+80_AL">
+	<Rdc>0.206<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_3X50+54||RZ_3*50+54.6">
+	<Rdc>0.641<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.989<!--[mm]--></Do>
+	<S>50.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_3X95+54||RZ_3*95+54.6">
+	<Rdc>0.32<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_4X25||RZ_4*25">
+	<Rdc>1.2<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_4X25_CU||RZ_0.6/1KV4X25_CU">
+	<Rdc>0.727<!--SIEMPRE DEBAJO DEL OTRO RZ_4X25, SINO HABRA ERROR AL BUSCARLOS [ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_4X25_AL||RZ_0.6/1KV4X25AL">
+	<Rdc>1.2<!--SIEMPRE DEBAJO DEL OTRO RZ_4X25, SINO HABRA ERROR AL BUSCARLOS [ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="XZ1_1X150||XZ1_1X150">
+	<Rdc>0.206<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="XZ1_1X240||XZ1_1X240">
+	<Rdc>0.125<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="XZ1_1X50||XZ1_1X50">
+	<Rdc>0.641<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.989<!--[mm]--></Do>
+	<S>50.0<!--[mm2]--></S>
+  </cable>
+  <cable name="XZ1_1X95||XZ1_1X95">
+	<Rdc>0.32<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-4(1X95)||RV_0.6/1_KV_4(1X95)_AL">
+	<Rdc>0.32<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-4X16||RRF_0.6/1_KV_PB_4X16_MM2_CU">
+	<Rdc>1.15<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.257<!--[mm]--></Do>
+	<S>16.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-3X25||RRF_0.6/1_KV_PB_3X25_+_16_MM2_CU">
+	<Rdc>0.727<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-3X50||RRF_0.6/1_KV_PB_3X50_+_25_MM2_CU">
+	<Rdc>0.387<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>3.989<!--[mm]--></Do>
+	<S>50.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-3X70||RRF_0.6/1_KV_PB_3X70_+_50_MM2_CU">
+	<Rdc>0.268<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>4.72<!--[mm]--></Do>
+	<S>70.0<!--[mm2]--></S>
+  </cable>
+  <cable name="CU-3X90||RRF_0.6/1_KV_PB_3X90_+_70_MM2_CU">
+	<Rdc>0.193<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.352<!--[mm]--></Do>
+	<S>90.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-3X150||DISTRICABLE_0.6/1_KV_3X150_+_95_MM2_AL">
+	<Rdc>0.206<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>6.91<!--[mm]--></Do>
+	<S>150.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-3X95||DISTRICABLE_0.6/1_KV_3X95_+54.6_MM2_AL">
+	<Rdc>0.32<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_3X25+54||RZ_0.6/1_KV_3X25+54.6_AL">
+	<Rdc>1.2<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL-95||AL_-_95">
+	<Rdc>0.32<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RV_AL-95||RV_0.6/1KV3X95+1X50_AL">
+	<Rdc>0.32<!--SIEMPRE DEBAJO DEL OTRO AL-95, SINO HABRA ERROR AL BUSCARLOS [ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>5.499<!--[mm]--></Do>
+	<S>95.0<!--[mm2]--></S>
+  </cable>
+  <cable name="RZ_25_CU||RZ_0.6/1KV2X25_CU">
+	<Rdc>0.727<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>2.821<!--[mm]--></Do>
+	<S>25.0<!--[mm2]--></S>
+  </cable>
+  <cable name="AL_240||RV_0.6/1KV3X240+1X150_AL">
+	<Rdc>0.125<!--[ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="2(AL_240)||RV_2(3(1X240)+1X150)_AL-UNI">
+	<Rdc>0.0625<!--SIEMPRE DEBAJO DEL OTRO AL_240, SINO HABRA ERROR AL BUSCARLOS [ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="3(AL_240)||RV_3(3(1X240)+1X150)_AL-UNI">
+	<Rdc>0.0417<!--SIEMPRE DEBAJO DEL OTRO AL_240, SINO HABRA ERROR AL BUSCARLOS [ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="4(AL_240)||RV_4(3(1X240)+1X150)_AL-UNI">
+	<Rdc>0.0313<!--SIEMPRE DEBAJO DEL OTRO AL_240, SINO HABRA ERROR AL BUSCARLOS [ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
+  </cable>
+  <cable name="6(AL_240)||RV_6(3(1X240)+1X150)_AL-UNI">
+	<Rdc>0.0208<!--SIEMPRE DEBAJO DEL OTRO RZ_4X25, SINO HABRA ERROR AL BUSCARLOS [ohms/km]--></Rdc>
+	<T0>20.0<!--[celsius degrees]--></T0>
+	<Di>0.0<!--[mm]--></Di>
+	<Do>8.74<!--[mm]--></Do>
+	<S>240.0<!--[mm2]--></S>
   </cable>
 </cable_library>

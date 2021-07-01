@@ -124,7 +124,7 @@ class Conductor:
         self.X1 = ((self.Do+2*self.Di)/(self.Do+self.Di))*0.01*np.sqrt((8* \
                     np.pi*self.f*(self.Do-self.Di))/(self.Rdc*(self.Do+self.Di)))
         self.X2 = self.I/self.S
-        print( str(self.X2))
+        #print( str(self.X2))
         self.K1 = 0.99609+0.018578*self.X1-0.030263*self.X1*self.X1+0.020735* \
                     self.X1*self.X1*self.X1
         self.K2 = 0.99947+0.028895*self.X2-0.005934*self.X2*self.X2+0.00042259* \
@@ -142,12 +142,13 @@ class Conductor:
 
         for children in cable_library_root:
         #print( childrem.tag, childrem.attrib)
-            if children.attrib["name"]==self.NameConductor:
+            #if children.attrib["name"]==self.NameConductor:
+            if self.NameConductor in children.attrib["name"] and len(str(self.NameConductor)) > 3: #Comprobar la longitud del cable. Si está vacío '' también considera que forma parte del diccionario.
                 self.Found_cable = 1
-                print("+++++++++++++++++++++++++++++++")
-                print(children.attrib["name"])
+                #print("+++++++++++++++++++++++++++++++")
+                #print(children.attrib["name"])
                 for child in children:
-                    print( child.tag, child.text)
+                    #print( child.tag, child.text)
                     if child.tag == "Rdc":
                         self.Rdc = float(child.text)
                     elif child.tag == "T0":
@@ -158,4 +159,6 @@ class Conductor:
                         self.Do = float(child.text)
                     elif child.tag == "S":
                         self.S = float(child.text)
+            if self.Found_cable == 1: #Si se ha encontrado un cable con ese nombre se aborta el fucle for para no seguir iterando por el resto de conductores del .xml. Si se suigue iterando se pueden confuncir los valores: Ej. 4X16_CU coger los valores de RZ_4X16_CU.
+                break
         return self.Found_cable
