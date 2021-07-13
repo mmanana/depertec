@@ -1442,11 +1442,11 @@ class Solve_Graph:
                 try:   
                     nodo_coord_x = row['NUDO_X']
                     nodo_coord_y = row['NUDO_Y']
-                    G.add_node(row['ID_NODO_LBT_ID'], TR=trafo, P_R_0 = 0, Q_R_0 = 0, P_S_0 = 0, Q_S_0 = 0, P_T_0 = 0, Q_T_0 = 0, Tipo_Nodo = tipo_nodo_prov, pos = (float(str(nodo_coord_x).replace(',','.')), float(str(nodo_coord_y).replace(',','.'))), color_nodo = str(color_nodo_graph), N_ant = 0, N_suc = 0)
+                    G.add_node(row['ID_NODO_LBT_ID'], TR=trafo, P_R_0 = 0, Q_R_0 = 0, P_S_0 = 0, Q_S_0 = 0, P_T_0 = 0, Q_T_0 = 0, Tipo_Nodo = tipo_nodo_prov, pos = (float(str(nodo_coord_x).replace(',','.')), float(str(nodo_coord_y).replace(',','.'))), color_nodo = str(color_nodo_graph), N_ant = 0, N_suc = 0, QBT_TENSION=400)
                 except:
                     nodo_coord_x = 0
                     nodo_coord_y = 0
-                    G.add_node(row['ID_NODO_LBT_ID'], TR=trafo, P_R_0 = 0, Q_R_0 = 0, P_S_0 = 0, Q_S_0 = 0, P_T_0 = 0, Q_T_0 = 0, Tipo_Nodo = tipo_nodo_prov, pos = (float(str(nodo_coord_x).replace(',','.')), float(str(nodo_coord_y).replace(',','.'))), color_nodo = str(color_nodo_graph), N_ant = 0, N_suc = 0)
+                    G.add_node(row['ID_NODO_LBT_ID'], TR=trafo, P_R_0 = 0, Q_R_0 = 0, P_S_0 = 0, Q_S_0 = 0, P_T_0 = 0, Q_T_0 = 0, Tipo_Nodo = tipo_nodo_prov, pos = (float(str(nodo_coord_x).replace(',','.')), float(str(nodo_coord_y).replace(',','.'))), color_nodo = str(color_nodo_graph), N_ant = 0, N_suc = 0, QBT_TENSION=400)
                     logger.error('Error al buscar las coordenadas de traza para el NODO_DESTINO_LBT_ID ' + str(row['NODO_DESTINO_LBT_ID']))
                     #continue
                 logger.warning('Posible error. El nodo ' + str(row.ID_NODO_LBT_ID) + ' no estaba en el grafo al añadir todas las trazas. Añadido sin conexión.')
@@ -2117,104 +2117,134 @@ class Solve_Graph:
             G.nodes[nodo]['Q_T_0'] = 0
         
         #Se recorre el DF de AE para añadir la potencia de cada CUPS
+        cups_utilizados = [] #Se define esta lista para ir incluyendo los CUPS que ya se han utilizado, para evitar los casos con 2 filas repetidas por CUPS
         for index, row in df_AE_fecha.iterrows():
             if len(df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS].reset_index(drop=True)) >= 1:
                 if len(df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS].reset_index(drop=True)) > 1:
-                    logger.error('Encontrados ' + str(len(df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS].reset_index(drop=True))) + ' filas con CCH_AE para el CUPS ' + str(row.CUPS) + ' y debería ser solo 1 fila. Se considera solo el primer valor para el análisis.')
-
-                if df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS].sort_values(colum_hora, ascending=False).reset_index(drop=True)[colum_hora][0] > 0:
-                    # potencia_cup = float(df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS][colum_hora].reset_index(drop=True)[0])
-                    potencia_cup = float(df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS].sort_values(colum_hora, ascending=False).reset_index(drop=True)[colum_hora][0])
-                    #Cuidado con los posibles valores de potencia 'nan'.
-                    if potencia_cup > 0:
-                        aa = 'todo ok'
-                        del aa
+                    #Se ha encontrado más de 1 fila AE para el mismo CUPS en la misma fecha en STO. GRIAL 32 (6486) para el CUPS ES0033770553479001ZZ0F  durante varios días del mes de enero de 2020.
+                    logger.error('Encontrados ' + str(len(df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS].reset_index(drop=True))) + ' filas con CCH_AE para el CUPS ' + str(row.CUPS) + ' y debería ser solo 1 fila. Se considera solo el valormás grande para el análisis de la hora ' + str(colum_hora))
+                
+                try:
+                    if df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS].sort_values(colum_hora, ascending=False).reset_index(drop=True)[colum_hora][0] > 0: 
+                        # potencia_cup = float(df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS][colum_hora].reset_index(drop=True)[0])
+                        potencia_cup = float(df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS].sort_values(colum_hora, ascending=False).reset_index(drop=True)[colum_hora][0])
+                        #Cuidado con los posibles valores de potencia 'nan'.
+                        if potencia_cup > 0:
+                            aa = 'todo ok'
+                            del aa
+                        else:
+                            potencia_cup = 0
+                        Q_CUP = 0
+                        cup_amm_fase = G.nodes[row.CUPS]['AMM_FASE']
+                        if cup_amm_fase == 'R' or cup_amm_fase == 'S' or cup_amm_fase == 'T':
+                            aa = 'todo ok'
+                            del aa
+                        else: 
+                            logger.error('Error al identificar la fase ' + str(cup_amm_fase) + ' del CUPS ' + str(row.CUPS))
+                            cup_amm_fase = 'R'
+                            
+                        cup_tipo_conexion = G.nodes[row.CUPS]['TIPO_CONEXION']
+                        
                     else:
                         potencia_cup = 0
-                    Q_CUP = 0
-                    cup_amm_fase = G.nodes[row.CUPS]['AMM_FASE']
-                    if cup_amm_fase == 'R' or cup_amm_fase == 'S' or cup_amm_fase == 'T':
-                        aa = 'todo ok'
-                        del aa
-                    else: 
-                        logger.error('Error al identificar la fase ' + str(cup_amm_fase) + ' del CUPS ' + str(row.CUPS))
+                        Q_CUP = 0
                         cup_amm_fase = 'R'
-                        
-                    cup_tipo_conexion = G.nodes[row.CUPS]['TIPO_CONEXION']
-                    
-                else:
+                        cup_tipo_conexion = 'MONOFASICO'
+                except:
                     potencia_cup = 0
                     Q_CUP = 0
                     cup_amm_fase = 'R'
                     cup_tipo_conexion = 'MONOFASICO'
                 
                 Nodo_grafo = str(list(G.edges(row.CUPS))[0][1])
-                        
+                
                 #Se agrega la potencia en el nodo. Aquí se sumará lo de todos los CUPS conectados a ese nodo.
                 #Se agrega siempre en P_FASE_0 y Q_FASE_0
                 if cup_tipo_conexion == 'MONOFASICO':
-                    #Se asigna el valor de potencia en el atributo del CUPS y en la fase correspondiente.
-                    G.nodes[str(row.CUPS)]['P_' + cup_amm_fase + '_0'] = potencia_cup
-                    G.nodes[str(row.CUPS)]['Q_' + cup_amm_fase + '_0'] = Q_CUP
-                    #Idem. para la fase oportuna del nodo
-                    G.nodes[Nodo_grafo]['P_' + cup_amm_fase + '_0'] = G.nodes[Nodo_grafo]['P_' + cup_amm_fase + '_0'] + potencia_cup
-                    G.nodes[Nodo_grafo]['Q_' + cup_amm_fase + '_0'] = G.nodes[Nodo_grafo]['Q_' + cup_amm_fase + '_0'] + G.nodes[str(row.CUPS)]['Q_' + cup_amm_fase + '_0']
-                    #Pérdidas de la línea que une la arqueta con el CUP. Puede ser trifásica o monofásica. NO tenemos el tipo de cable.
-                    # G.edges[(Nodo_grafo,  str(row.CUPS),0)]['P_' + cup_amm_fase + '_Linea'] = 0
-                    # G.edges[(Nodo_grafo,  str(row.CUPS),0)]['Q_' + cup_amm_fase + '_Linea'] = 0
+                    #Se comprueba si no se ha añadido antes una potencia a este CUPS, podría ser el caso si el CUPS estuviese repetido para la fecha de análisis. En este caso, el del primer if de este ciclo, se habría añadido el valor más alto de potencia y se descartan los demás.
+                    # if G.nodes[str(row.CUPS)]['P_' + cup_amm_fase + '_0'] == 0:
+                    if str(row.CUPS) not in cups_utilizados:
+                        #Se asigna el valor de potencia en el atributo del CUPS y en la fase correspondiente.
+                        G.nodes[str(row.CUPS)]['P_' + cup_amm_fase + '_0'] = potencia_cup
+                        G.nodes[str(row.CUPS)]['Q_' + cup_amm_fase + '_0'] = Q_CUP
+                        #Idem. para la fase oportuna del nodo
+                        G.nodes[Nodo_grafo]['P_' + cup_amm_fase + '_0'] = G.nodes[Nodo_grafo]['P_' + cup_amm_fase + '_0'] + potencia_cup
+                        G.nodes[Nodo_grafo]['Q_' + cup_amm_fase + '_0'] = G.nodes[Nodo_grafo]['Q_' + cup_amm_fase + '_0'] + G.nodes[str(row.CUPS)]['Q_' + cup_amm_fase + '_0']
+                        #Pérdidas de la línea que une la arqueta con el CUP. Puede ser trifásica o monofásica. NO tenemos el tipo de cable.
+                        # G.edges[(Nodo_grafo,  str(row.CUPS),0)]['P_' + cup_amm_fase + '_Linea'] = 0
+                        # G.edges[(Nodo_grafo,  str(row.CUPS),0)]['Q_' + cup_amm_fase + '_Linea'] = 0
+                        cups_utilizados.append(str(row.CUPS)) #Se añade el cups a la lista una vez utilizado
+                    else:
+                        logger.error('Ya se ha agregado una potencia AE para el CUPS monofásico ' + str(row.CUPS) + ', que aparece en varias filas, se obvian el resto de valores de la hora ' + str(colum_hora))
+                        
                     
                 elif cup_tipo_conexion == 'TRIFASICO':
-                    #Se asigna el valor de potencia en el atributo del CUPS y en las 3 fases.
-                    G.nodes[str(row.CUPS)]['P_R_0'] = potencia_cup/3
-                    G.nodes[str(row.CUPS)]['Q_R_0'] = Q_CUP/3
-                    G.nodes[str(row.CUPS)]['P_S_0'] = potencia_cup/3
-                    G.nodes[str(row.CUPS)]['Q_S_0'] = Q_CUP/3
-                    G.nodes[str(row.CUPS)]['P_T_0'] = potencia_cup/3
-                    G.nodes[str(row.CUPS)]['Q_T_0'] = Q_CUP/3
-                    
-                    G.nodes[Nodo_grafo]['P_R_0'] = G.nodes[Nodo_grafo]['P_R_0'] + potencia_cup/3
-                    G.nodes[Nodo_grafo]['Q_R_0'] = G.nodes[Nodo_grafo]['Q_R_0'] + Q_CUP/3
-                    G.nodes[Nodo_grafo]['P_S_0'] = G.nodes[Nodo_grafo]['P_S_0'] + potencia_cup/3
-                    G.nodes[Nodo_grafo]['Q_S_0'] = G.nodes[Nodo_grafo]['Q_S_0'] + Q_CUP/3
-                    G.nodes[Nodo_grafo]['P_T_0'] = G.nodes[Nodo_grafo]['P_T_0'] + potencia_cup/3
-                    G.nodes[Nodo_grafo]['Q_T_0'] = G.nodes[Nodo_grafo]['Q_T_0'] + Q_CUP/3
-                    #Pérdidas de la línea que une la arqueta con el CUP. Puede ser trifásica o monofásica. NO tenemos el tipo de cable.
-                    # G.edges[(Nodo_grafo,  str(row.CUPS),0)]['P_R_Linea'] = 0
-                    # G.edges[(Nodo_grafo,  str(row.CUPS),0)]['Q_R_Linea'] = 0
-                    # G.edges[(Nodo_grafo,  str(row.CUPS),0)]['P_S_Linea'] = 0
-                    # G.edges[(Nodo_grafo,  str(row.CUPS),0]['Q_S_Linea'] = 0
-                    # G.edges[(Nodo_grafo,  str(row.CUPS),0]['P_T_Linea'] = 0
-                    # G.edges[(Nodo_grafo,  str(row.CUPS) ,0)]['Q_T_Linea'] = 0
+                    #Se comprueba si no se ha añadido antes una potencia a este CUPS, podría ser el caso si el CUPS estuviese repetido para la fecha de análisis. En este caso, el del primer if de este ciclo, se habría añadido el valor más alto de potencia y se descartan los demás.
+                    # if (G.nodes[str(row.CUPS)]['P_R_0'] == 0) and (G.nodes[str(row.CUPS)]['P_S_0'] == 0) and (G.nodes[str(row.CUPS)]['P_T_0'] == 0):
+                    if str(row.CUPS) not in cups_utilizados:
+                        #Se asigna el valor de potencia en el atributo del CUPS y en las 3 fases.
+                        G.nodes[str(row.CUPS)]['P_R_0'] = potencia_cup/3
+                        G.nodes[str(row.CUPS)]['Q_R_0'] = Q_CUP/3
+                        G.nodes[str(row.CUPS)]['P_S_0'] = potencia_cup/3
+                        G.nodes[str(row.CUPS)]['Q_S_0'] = Q_CUP/3
+                        G.nodes[str(row.CUPS)]['P_T_0'] = potencia_cup/3
+                        G.nodes[str(row.CUPS)]['Q_T_0'] = Q_CUP/3
+                        
+                        G.nodes[Nodo_grafo]['P_R_0'] = G.nodes[Nodo_grafo]['P_R_0'] + potencia_cup/3
+                        G.nodes[Nodo_grafo]['Q_R_0'] = G.nodes[Nodo_grafo]['Q_R_0'] + Q_CUP/3
+                        G.nodes[Nodo_grafo]['P_S_0'] = G.nodes[Nodo_grafo]['P_S_0'] + potencia_cup/3
+                        G.nodes[Nodo_grafo]['Q_S_0'] = G.nodes[Nodo_grafo]['Q_S_0'] + Q_CUP/3
+                        G.nodes[Nodo_grafo]['P_T_0'] = G.nodes[Nodo_grafo]['P_T_0'] + potencia_cup/3
+                        G.nodes[Nodo_grafo]['Q_T_0'] = G.nodes[Nodo_grafo]['Q_T_0'] + Q_CUP/3
+                        #Pérdidas de la línea que une la arqueta con el CUP. Puede ser trifásica o monofásica. NO tenemos el tipo de cable.
+                        # G.edges[(Nodo_grafo,  str(row.CUPS),0)]['P_R_Linea'] = 0
+                        # G.edges[(Nodo_grafo,  str(row.CUPS),0)]['Q_R_Linea'] = 0
+                        # G.edges[(Nodo_grafo,  str(row.CUPS),0)]['P_S_Linea'] = 0
+                        # G.edges[(Nodo_grafo,  str(row.CUPS),0]['Q_S_Linea'] = 0
+                        # G.edges[(Nodo_grafo,  str(row.CUPS),0]['P_T_Linea'] = 0
+                        # G.edges[(Nodo_grafo,  str(row.CUPS) ,0)]['Q_T_Linea'] = 0
+                        cups_utilizados.append(str(row.CUPS)) #Se añade el cups a la lista una vez utilizado
+                    else:
+                        logger.error('Ya se ha agregado una potencia AE para el CUPS trifásico ' + str(row.CUPS) + ', que aparece en varias filas, se obvian el resto de valores de la hora ' + str(colum_hora))
                 else:
                     logger.error('ERROR CUPS_AE. TIPO DE CONEXIÓN NO IDENTIFICADA (MONOFÁSICA/TRIFÁSICA): ' +  str(row.CUPS) + ': ' + str(cup_tipo_conexion))
 
         #Se repite el proceso para los CUPS con generación vertida a la red.
         #En este caso se define la potencia como negativa, de forma que se reste a la potencia inyectada por el trafo.
+        del cups_utilizados
+        cups_utilizados = [] #Se define esta lista para ir incluyendo los CUPS que ya se han utilizado, para evitar los casos con 2 filas repetidas por CUPS
         for index, row in df_AS_fecha.iterrows():
             if len(df_AS_fecha.loc[df_AS_fecha['CUPS'] == row.CUPS].reset_index(drop=True)) >= 1:
                 if len(df_AS_fecha.loc[df_AS_fecha['CUPS'] == row.CUPS].reset_index(drop=True)) > 1:
-                    logger.error('Encontrados ' + str(len(df_AS_fecha.loc[df_AS_fecha['CUPS'] == row.CUPS].reset_index(drop=True))) + ' filas con CCH_AS para el CUPS ' + str(row.CUPS) + ' y debería ser solo 1 fila. Se considera solo el primer valor para el análisis.')
-                       
-                if df_AS_fecha.loc[df_AS_fecha['CUPS'] == row.CUPS].sort_values(colum_hora, ascending=False).reset_index(drop=True)[colum_hora][0] > 0:
-                    potencia_cup = -1 * float(df_AS_fecha.loc[df_AS_fecha['CUPS'] == row.CUPS].sort_values(colum_hora, ascending=False).reset_index(drop=True)[colum_hora][0])
-                    #Cuidado con los posibles valores de potencia 'nan'.
-                    if potencia_cup < 0:
-                        aa = 'todo ok'
-                        del aa
+                    #Se ha encontrado más de 1 fila AS para el mismo CUPS en la misma fecha.
+                    logger.error('Encontrados ' + str(len(df_AS_fecha.loc[df_AS_fecha['CUPS'] == row.CUPS].reset_index(drop=True))) + ' filas con CCH_AS para el CUPS ' + str(row.CUPS) + ' y debería ser solo 1 fila. Se considera solo el primer valor para el análisis de la hora ' + str(colum_hora))
+                
+                try:       
+                    if df_AS_fecha.loc[df_AS_fecha['CUPS'] == row.CUPS].sort_values(colum_hora, ascending=False).reset_index(drop=True)[colum_hora][0] > 0:
+                        potencia_cup = -1 * float(df_AS_fecha.loc[df_AS_fecha['CUPS'] == row.CUPS].sort_values(colum_hora, ascending=False).reset_index(drop=True)[colum_hora][0])
+                        #Cuidado con los posibles valores de potencia 'nan'.
+                        if potencia_cup < 0:
+                            aa = 'todo ok'
+                            del aa
+                        else:
+                            potencia_cup = 0
+                        Q_CUP = 0
+                        cup_amm_fase = G.nodes[row.CUPS]['AMM_FASE']
+                        if cup_amm_fase == 'R' or cup_amm_fase == 'S' or cup_amm_fase == 'T':
+                            aa = 'todo ok'
+                            del aa
+                        else: 
+                            logger.error('Error al identificar la fase ' + str(cup_amm_fase) + ' del CUPS ' + str(row.CUPS))
+                            cup_amm_fase = 'R'
+                            
+                        cup_tipo_conexion = G.nodes[row.CUPS]['TIPO_CONEXION']
+                        
                     else:
                         potencia_cup = 0
-                    Q_CUP = 0
-                    cup_amm_fase = G.nodes[row.CUPS]['AMM_FASE']
-                    if cup_amm_fase == 'R' or cup_amm_fase == 'S' or cup_amm_fase == 'T':
-                        aa = 'todo ok'
-                        del aa
-                    else: 
-                        logger.error('Error al identificar la fase ' + str(cup_amm_fase) + ' del CUPS ' + str(row.CUPS))
+                        Q_CUP = 0
                         cup_amm_fase = 'R'
-                        
-                    cup_tipo_conexion = G.nodes[row.CUPS]['TIPO_CONEXION']
-                    
-                else:
+                        cup_tipo_conexion = 'MONOFASICO'
+                except:
                     potencia_cup = 0
                     Q_CUP = 0
                     cup_amm_fase = 'R'
@@ -2225,32 +2255,44 @@ class Solve_Graph:
                 #Se agrega la potencia en el nodo. Aquí se sumará lo de todos los CUPS conectados a ese nodo. En este caso la generación se sumará con número negativo, por lo que se restará.
                 #Se agrega siempre en P_FASE_0 y Q_FASE_0
                 if cup_tipo_conexion == 'MONOFASICO':
-                    #Se asigna el valor de potencia en el atributo del CUPS y en la fase correspondiente.
-                    #Cuidado con los casos de autoconsumo, puede darse el caso de que, para una misma hora, un CUPS haya consumido e inyectado a la vez (EL PILAR 6720, 2020-10-03)
-                    G.nodes[str(row.CUPS)]['P_' + cup_amm_fase + '_0'] += potencia_cup
-                    G.nodes[str(row.CUPS)]['Q_' + cup_amm_fase + '_0'] += Q_CUP
-                    #Idem. para la fase oportuna del nodo
-                    G.nodes[Nodo_grafo]['P_' + cup_amm_fase + '_0'] = G.nodes[Nodo_grafo]['P_' + cup_amm_fase + '_0'] + potencia_cup
-                    G.nodes[Nodo_grafo]['Q_' + cup_amm_fase + '_0'] = G.nodes[Nodo_grafo]['Q_' + cup_amm_fase + '_0'] + G.nodes[str(row.CUPS)]['Q_' + cup_amm_fase + '_0']
-                    
+                    #Se comprueba si no se ha añadido antes una potencia a este CUPS, podría ser el caso si el CUPS estuviese repetido para la fecha de análisis. En este caso, el del primer if de este ciclo, se habría añadido el valor más alto de potencia y se descartan los demás.
+                    # if G.nodes[str(row.CUPS)]['P_' + cup_amm_fase + '_0'] == 0:
+                    if str(row.CUPS) not in cups_utilizados:
+                        #Se asigna el valor de potencia en el atributo del CUPS y en la fase correspondiente.
+                        #Cuidado con los casos de autoconsumo, puede darse el caso de que, para una misma hora, un CUPS haya consumido e inyectado a la vez (EL PILAR 6720, 2020-10-03)
+                        G.nodes[str(row.CUPS)]['P_' + cup_amm_fase + '_0'] += potencia_cup
+                        G.nodes[str(row.CUPS)]['Q_' + cup_amm_fase + '_0'] += Q_CUP
+                        #Idem. para la fase oportuna del nodo
+                        G.nodes[Nodo_grafo]['P_' + cup_amm_fase + '_0'] = G.nodes[Nodo_grafo]['P_' + cup_amm_fase + '_0'] + potencia_cup
+                        G.nodes[Nodo_grafo]['Q_' + cup_amm_fase + '_0'] = G.nodes[Nodo_grafo]['Q_' + cup_amm_fase + '_0'] + G.nodes[str(row.CUPS)]['Q_' + cup_amm_fase + '_0']
+                        cups_utilizados.append(str(row.CUPS)) #Se añade el cups a la lista una vez utilizado
+                    else:
+                        logger.error('Ya se ha agregado una potencia AS para el CUPS monofásico ' + str(row.CUPS) + ', que aparece en varias filas, se obvian el resto de valores de la hora ' + str(colum_hora))
+                        
                 elif cup_tipo_conexion == 'TRIFASICO':
-                    #Se asigna el valor de potencia en el atributo del CUPS y en las 3 fases.
-                    G.nodes[str(row.CUPS)]['P_R_0'] += potencia_cup/3
-                    G.nodes[str(row.CUPS)]['Q_R_0'] += Q_CUP/3
-                    G.nodes[str(row.CUPS)]['P_S_0'] += potencia_cup/3
-                    G.nodes[str(row.CUPS)]['Q_S_0'] += Q_CUP/3
-                    G.nodes[str(row.CUPS)]['P_T_0'] += potencia_cup/3
-                    G.nodes[str(row.CUPS)]['Q_T_0'] += Q_CUP/3
-                    
-                    G.nodes[Nodo_grafo]['P_R_0'] = G.nodes[Nodo_grafo]['P_R_0'] + potencia_cup/3
-                    G.nodes[Nodo_grafo]['Q_R_0'] = G.nodes[Nodo_grafo]['Q_R_0'] + Q_CUP/3
-                    G.nodes[Nodo_grafo]['P_S_0'] = G.nodes[Nodo_grafo]['P_S_0'] + potencia_cup/3
-                    G.nodes[Nodo_grafo]['Q_S_0'] = G.nodes[Nodo_grafo]['Q_S_0'] + Q_CUP/3
-                    G.nodes[Nodo_grafo]['P_T_0'] = G.nodes[Nodo_grafo]['P_T_0'] + potencia_cup/3
-                    G.nodes[Nodo_grafo]['Q_T_0'] = G.nodes[Nodo_grafo]['Q_T_0'] + Q_CUP/3
+                    #Se comprueba si no se ha añadido antes una potencia a este CUPS, podría ser el caso si el CUPS estuviese repetido para la fecha de análisis. En este caso, el del primer if de este ciclo, se habría añadido el valor más alto de potencia y se descartan los demás.
+                    # if (G.nodes[str(row.CUPS)]['P_R_0'] == 0) and (G.nodes[str(row.CUPS)]['P_S_0'] == 0) and (G.nodes[str(row.CUPS)]['P_T_0'] == 0):
+                    if str(row.CUPS) not in cups_utilizados:
+                        #Se asigna el valor de potencia en el atributo del CUPS y en las 3 fases.
+                        G.nodes[str(row.CUPS)]['P_R_0'] += potencia_cup/3
+                        G.nodes[str(row.CUPS)]['Q_R_0'] += Q_CUP/3
+                        G.nodes[str(row.CUPS)]['P_S_0'] += potencia_cup/3
+                        G.nodes[str(row.CUPS)]['Q_S_0'] += Q_CUP/3
+                        G.nodes[str(row.CUPS)]['P_T_0'] += potencia_cup/3
+                        G.nodes[str(row.CUPS)]['Q_T_0'] += Q_CUP/3
+                        
+                        G.nodes[Nodo_grafo]['P_R_0'] = G.nodes[Nodo_grafo]['P_R_0'] + potencia_cup/3
+                        G.nodes[Nodo_grafo]['Q_R_0'] = G.nodes[Nodo_grafo]['Q_R_0'] + Q_CUP/3
+                        G.nodes[Nodo_grafo]['P_S_0'] = G.nodes[Nodo_grafo]['P_S_0'] + potencia_cup/3
+                        G.nodes[Nodo_grafo]['Q_S_0'] = G.nodes[Nodo_grafo]['Q_S_0'] + Q_CUP/3
+                        G.nodes[Nodo_grafo]['P_T_0'] = G.nodes[Nodo_grafo]['P_T_0'] + potencia_cup/3
+                        G.nodes[Nodo_grafo]['Q_T_0'] = G.nodes[Nodo_grafo]['Q_T_0'] + Q_CUP/3
+                        cups_utilizados.append(str(row.CUPS)) #Se añade el cups a la lista una vez utilizado
+                    else:
+                        logger.error('Ya se ha agregado una potencia AS para el CUPS trifásico ' + str(row.CUPS) + ', que aparece en varias filas, se obvian el resto de valores de la hora ' + str(colum_hora))
                 else:
                     logger.error('ERROR CUPS_AS. TIPO DE CONEXIÓN NO IDENTIFICADA (MONOFÁSICA/TRIFÁSICA): ' +  str(row.CUPS) + ': ' + str(cup_tipo_conexion))
-
+        del cups_utilizados
         return G
     
     
@@ -2814,6 +2856,10 @@ def main(self):
                 num_desc = 0
                 num_desc_spl = 0
                 
+                #Hay que considerar el caso en que haya un TR_230 o TR_400 porque se ha identificado un CUP GISS ahí pero realmente no hay nada más conectado. Ejemplo MATADERO 5482
+                if G.nodes[node]['Tipo_Nodo'] == 'CT_Virtual' and len(a) == 1:
+                    end_nodes_sin_cups.append(node)
+                
                 #Los nodos CUP no tienen asignados estos atributos.
                 # if data['Tipo_Nodo'] != 'CUPS' and data['Tipo_Nodo'] != 'CUPS_TR':
                     #Se crea un campo que define el número de enlaces que tiene cada nodo y otro que sirve como indicador de la agregación aguas abajo para más adelante
@@ -2829,7 +2875,7 @@ def main(self):
                             num_cups += 1
                         else:
                             num_desc +=1
-                            
+                    
                     #Para splitting_nodes_sin_cups
                     if G.nodes[row]['Tipo_Nodo'] != 'CUPS' and data['Tipo_Nodo'] != 'CUPS' and G.nodes[row]['Tipo_Nodo'] != 'CUPS_TR' and data['Tipo_Nodo'] != 'CUPS_TR':
                         # G.nodes[node]['Enlaces_orig1'] = G.nodes[node]['Enlaces_orig1'] + 1
@@ -2886,7 +2932,7 @@ def main(self):
     
     #ELIMINAR
     print(cups_agregado_CT)
-    return
+    # return
     # time.sleep(3)
     
     
@@ -3304,9 +3350,8 @@ def main(self):
                     
                     #Se comprueba que el valor medido en el CT no es 0 y que hay cargas conectadas. Si no hay cargas y el medido es 0 significa que es un trafo solo con salida de 230 pero que esta es la salida de 400 creada inicialmente y que hay que despreciar.
                     if AE_cch_ct == 0 and P_R_carga_tot == 0 and P_S_carga_tot == 0 and P_T_carga_tot == 0:
-                        print('Error, algo es 0.')
+                        print('Error, todo es 0.')
                         logger.error('AE_cch_ct, P_R_carga_tot, P_S_carga_tot, P_Q_carga_tot son 0. Se aborta la resolución del grafo.')
-                        fecha_datetime = fecha_datetime + datetime.timedelta(days=1)
                         continue
                     elif AE_cch_ct == 0:
                         CCH_Data_Error = 3 #Otros casos (valor medido = 0)
@@ -3336,7 +3381,7 @@ def main(self):
 
                         
                     print('\n' + self.Nombre_CT + ' ' + str(fecha) + ' ' + colum_hora)
-                    print('id_caso ' + str(id_caso) + ' ID trafo: ' + str(row))
+                    print('id_caso ' + str(id_caso) + ' ID trafo: ' + str(row))                 
                     print('Total pérdidas vanos (R, S, T): ', AE_R_vanos_tot, AE_S_vanos_tot, AE_T_vanos_tot, ' kW (' + str(AE_R_vanos_tot + AE_S_vanos_tot + AE_T_vanos_tot) + '), ', Q_R_vanos_tot, Q_S_vanos_tot, Q_T_vanos_tot, 'kVAr')
                     print('Total AE MEDIDO en el CT - ' + str(row) + ' (kW): ' + str(AE_cch_ct))
                     print('Total AS MEDIDO en el CT - ' + str(row) + ' (kW): ' + str(AS_cch_ct))
@@ -3366,11 +3411,12 @@ def main(self):
                                 #AE_CT_MEDIDO_KW y AS_CT_MEDIDO_KW son los valores AE y AS medidos en el CT para ese nivel (CT, trafo y nivel de tensión)
                                 #AE_R_LINEAS_KW, AE_S_LINEAS_KW, AE_T_LINEAS_KW son las pérdidas totales aguas abajo desde cada nodo del CT (CT, trafo, nivel de tensión) asociadas A LA POTENCIA ETNREGADA POR EL TRAFO, no al posible autoconsumo vertido a la red.
                                 #AS_R_LINEAS_KW, AS_S_LINEAS_KW, AS_T_LINEAS_KW son las pérdidas totales aguas abajo desde cada nodo del CT (CT, trafo, nivel de tensión) asociadas AL AUTOCONSUMO, y por lo tanto no aplicables a la potencia vertida por el trafo.
-                                instruccion_insert = "INSERT INTO " + self.tabla_cts_general + " (ID_Caso, ID_CT, CT_NOMBRE, ID_TRAFO, CODIGO_LVC, CCH_Data_Error, Fecha, Hora, P_R_CT_KW, P_S_CT_KW, P_T_CT_KW, AE_CT_MEDIDO_KW, AS_CT_MEDIDO_KW, AE_R_LINEAS_KW, AE_S_LINEAS_KW, AE_T_LINEAS_KW, AS_R_LINEAS_KW, AS_S_LINEAS_KW, AS_T_LINEAS_KW) VALUES (" + str(id_caso) + ", " + str(self.id_ct) + ", '" + self.Nombre_CT + "', '" + str(row) + "','"+ str(codigo_LVC) + "',"  + str(int(CCH_Data_Error)) + ",'" + str(fecha_sql) + "', '" + diccionario_horas.get(colum_hora) + ":00:00" + "', " + str(float(P_R_CT_tot)) + ", " + str(float(P_S_CT_tot)) + ", " + str(float(P_T_CT_tot)) + ", " + str(float(AE_cch_ct)) + ", " + str(float(AS_cch_ct)) + ", " + str(float(AE_R_vanos_tot)) + ", " + str(float(AE_S_vanos_tot)) + ", " + str(float(AE_T_vanos_tot)) + ", " + str(float(AS_R_vanos_tot)) + ", " + str(float(AS_S_vanos_tot)) + ", " + str(float(AS_T_vanos_tot)) + ");"
+                                # instruccion_insert = "INSERT INTO " + self.tabla_cts_general + " (ID_Caso, ID_CT, CT_NOMBRE, ID_TRAFO, CODIGO_LVC, CCH_Data_Error, Fecha, Hora, P_R_CT_KW, P_S_CT_KW, P_T_CT_KW, AE_CT_MEDIDO_KW, AS_CT_MEDIDO_KW, AE_R_LINEAS_KW, AE_S_LINEAS_KW, AE_T_LINEAS_KW, AS_R_LINEAS_KW, AS_S_LINEAS_KW, AS_T_LINEAS_KW) VALUES (" + str(id_caso) + ", " + str(self.id_ct) + ", '" + self.Nombre_CT + "', '" + str(row) + "','"+ str(codigo_LVC) + "',"  + str(int(CCH_Data_Error)) + ",'" + str(fecha_sql) + "', '" + diccionario_horas.get(colum_hora) + ":00:00" + "', " + str(float(P_R_CT_tot)) + ", " + str(float(P_S_CT_tot)) + ", " + str(float(P_T_CT_tot)) + ", " + str(float(AE_cch_ct)) + ", " + str(float(AS_cch_ct)) + ", " + str(float(AE_R_vanos_tot)) + ", " + str(float(AE_S_vanos_tot)) + ", " + str(float(AE_T_vanos_tot)) + ", " + str(float(AS_R_vanos_tot)) + ", " + str(float(AS_S_vanos_tot)) + ", " + str(float(AS_T_vanos_tot)) + ");"
+                                instruccion_insert = "INSERT INTO " + self.tabla_cts_general + " (ID_Caso, ID_CT, CT_NOMBRE, ID_NODO, CCH_Data_Error, Fecha, Hora, P_R_CT_KW, P_S_CT_KW, P_T_CT_KW, AE_CT_MEDIDO_KW, AS_CT_MEDIDO_KW, AE_R_LINEAS_KW, AE_S_LINEAS_KW, AE_T_LINEAS_KW, AS_R_LINEAS_KW, AS_S_LINEAS_KW, AS_T_LINEAS_KW) VALUES (" + str(id_caso) + ", " + str(self.id_ct) + ", '" + self.Nombre_CT + "', '" + str(codigo_LVC) + "',"  + str(int(CCH_Data_Error)) + ",'" + str(fecha_sql) + "', '" + diccionario_horas.get(colum_hora) + ":00:00" + "', " + str(float(P_R_CT_tot)) + ", " + str(float(P_S_CT_tot)) + ", " + str(float(P_T_CT_tot)) + ", " + str(float(AE_cch_ct)) + ", " + str(float(AS_cch_ct)) + ", " + str(float(AE_R_vanos_tot)) + ", " + str(float(AE_S_vanos_tot)) + ", " + str(float(AE_T_vanos_tot)) + ", " + str(float(AS_R_vanos_tot)) + ", " + str(float(AS_S_vanos_tot)) + ", " + str(float(AS_T_vanos_tot)) + ");"
                                 # print(instruccion_insert)
                                 cursor.execute(instruccion_insert)
                                 conn.commit()
-                                logger.debug(str(colum_hora) + ' guardado correctamente en la tabla general de la BBDD.')
+                                # logger.debug(str(colum_hora) + ' guardado correctamente en la tabla general de la BBDD.')
                             except:
                                 logger.error('Error al guardar en la BBDD. ' + instruccion_insert)
                                 continue

@@ -11,10 +11,10 @@
 '''
 
 import numpy as np
-import scipy.integrate as integrate
-import matplotlib.pyplot as plt
-from matplotlib.patches import Circle, Wedge, Polygon, Ellipse
-from matplotlib.collections import PatchCollection
+# import scipy.integrate as integrate
+# import matplotlib.pyplot as plt
+# from matplotlib.patches import Circle, Wedge, Polygon, Ellipse
+# from matplotlib.collections import PatchCollection
 import xml.etree.cElementTree as ET
 
 
