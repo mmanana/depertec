@@ -101,6 +101,7 @@ class Solve_Graph:
     archivo_topologia: str
     archivo_traza: str
     archivo_ct_cups: str
+    archivo_trafos_mt_bt: str
     ruta_cch: str
     archivo_config: str
     ruta_log: str
@@ -113,12 +114,13 @@ class Solve_Graph:
     save_plt_graph: int
     save_ddbb: int
     tabla_cts_general: str
+    tabla_trafos_general: str
     log_mode: str
     upper_limit: float
     lower_limit: float
     
     
-    def __init__( self, fecha_ini, fecha_fin, Nombre_CT, id_ct, archivo_topologia, archivo_traza, archivo_ct_cups, ruta_cch, archivo_config, ruta_log, V_Linea_400=400.0, V_Linea_230=230, X_cable=0, temp_cables=20, use_gml_file=1, save_csv_mod=1, save_plt_graph=1, save_ddbb=3, tabla_cts_general='OUTPUT_PERDIDAS_AGREGADOS_CT', log_mode = 'logging.INFO', upper_limit=10, lower_limit=10):
+    def __init__( self, fecha_ini, fecha_fin, Nombre_CT, id_ct, archivo_topologia, archivo_traza, archivo_ct_cups, archivo_trafos_mt_bt, ruta_cch, archivo_config, ruta_log, V_Linea_400=400.0, V_Linea_230=230, X_cable=0, temp_cables=20, use_gml_file=1, save_csv_mod=1, save_plt_graph=1, save_ddbb=3, tabla_cts_general='OUTPUT_PERDIDAS_AGREGADOS_CT', tabla_trafos_general='OUTPUT_PERDIDAS_TRAFOS', log_mode = 'logging.INFO', upper_limit=10, lower_limit=10):
         self.fecha_ini = fecha_ini
         self.fecha_fin = fecha_fin
         self.Nombre_CT = Nombre_CT
@@ -127,6 +129,7 @@ class Solve_Graph:
         self.archivo_topologia = archivo_topologia
         self.archivo_traza = archivo_traza
         self.archivo_ct_cups = archivo_ct_cups
+        self.archivo_trafos_mt_bt = archivo_trafos_mt_bt
         self.ruta_cch = ruta_cch
         self.archivo_config = archivo_config
         self.ruta_log = ruta_log
@@ -139,6 +142,7 @@ class Solve_Graph:
         self.save_plt_graph = save_plt_graph
         self.save_ddbb = save_ddbb
         self.tabla_cts_general = tabla_cts_general
+        self.tabla_trafos_general = tabla_trafos_general
         self.log_mode = log_mode
         self.upper_limit = upper_limit
         self.lower_limit = lower_limit
@@ -157,7 +161,7 @@ class Solve_Graph:
         print('use_gml_file: ' + str(use_gml_file))
         print('save_csv_mod: ' + str(save_csv_mod))
         print('save_plt_graph: ' + str(save_plt_graph))
-        print(tabla_cts_general)
+        print(tabla_cts_general, tabla_trafos_general)
         print('save_ddbb: ' + str(save_ddbb))
         print(log_mode)
         
@@ -175,7 +179,7 @@ class Solve_Graph:
 ## FUNCTIONS DEFINITION
 ##############################################################################
     
-    def update_graph_data_error(self, graph_data_error):
+    def update_graph_data_error(self, G, graph_data_error):
         """
         
         Función para actualizar el parámetro graph_data_error que indica la fiabilidad del grafo generado para cada CT.
@@ -183,6 +187,7 @@ class Solve_Graph:
         
         Parámetros
         ----------
+        G : Grafo del CT.
         graph_data_error : Variable para determinar la viabilidad del grafo en función de la calidad de los datos que lo definen.
             
         
@@ -190,38 +195,125 @@ class Solve_Graph:
         -------
         """
         logger = logging.getLogger('update_graph_data_error')
+        
+        #Modelo 1 de archivo csv con la info básica.
+        # try:
+        #     #Se actualiza en el .csv el valor de la variable graph_data_error para este CT.
+        #     graph_data_error_file = self.ruta_raiz + 'Graph_data_error.csv'
+        #     #Se comprueba si existe el archivo .csv que contiene la variable graph_data_error de los CTs simulados. Si no existe se crea uno nuevo.
+        #     if path.exists(graph_data_error_file):
+        #         #Hay veces que el archivo está creado pero está vacío y da error de lectura porque no tiene columnas.
+        #         try:
+        #             graph_data_error_df = pd.read_csv(graph_data_error_file, encoding='Latin9', header=0, sep=';', quotechar='\"', decimal=',')
+        #             #Se comprueba si existe un registro para este CT.
+        #             ct_prov = graph_data_error_df.loc[(graph_data_error_df['Nombre_CT'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == self.id_ct)].reset_index(drop=True)
+        #             if len(ct_prov) > 0:
+        #                 #Se actualizan los valores de fechahora y graph_data_error.
+        #                 graph_data_error_df.loc[(graph_data_error_df['Nombre_CT'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == (self.id_ct)), 'Fechahora'] = str(time.strftime("%d/%m/%y")) + ' - ' + str(time.strftime("%H:%M:%S"))
+        #                 graph_data_error_df.loc[(graph_data_error_df['Nombre_CT'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == (self.id_ct)), 'Graph_data_error'] = graph_data_error
+        #                 graph_data_error_df.to_csv(graph_data_error_file, index = False, encoding='Latin9', sep=';', decimal=',')
+        #             else:
+        #                 graph_data_error_df = graph_data_error_df.append({'Fechahora': str(time.strftime("%d/%m/%y")) + ' - ' + str(time.strftime("%H:%M:%S")), 'Nombre_CT': str(self.Nombre_CT), 'ID_CT': str(self.id_ct), 'Graph_data_error': str(graph_data_error)}, ignore_index=True)
+        #                 graph_data_error_df.to_csv(graph_data_error_file, index = False, encoding='Latin9', sep=';', decimal=',')
+        #                 del graph_data_error_df
+        #         except:
+        #             graph_data_error_df = pd.DataFrame(columns=['Fechahora', 'Nombre_CT', 'ID_CT', 'Graph_data_error'])
+        #             graph_data_error_df = graph_data_error_df.append({'Fechahora': str(time.strftime("%d/%m/%y")) + ' - ' + str(time.strftime("%H:%M:%S")), 'Nombre_CT': str(self.Nombre_CT), 'ID_CT': str(self.id_ct), 'Graph_data_error': str(graph_data_error)}, ignore_index=True)
+        #             graph_data_error_df.to_csv(graph_data_error_file, index = False, encoding='Latin9', sep=';', decimal=',')
+        #             del graph_data_error_df
+        #     else:
+        #         graph_data_error_df = pd.DataFrame(columns=['Fechahora', 'Nombre_CT', 'ID_CT', 'Graph_data_error'])
+        #         graph_data_error_df = graph_data_error_df.append({'Fechahora': str(time.strftime("%d/%m/%y")) + ' - ' + str(time.strftime("%H:%M:%S")), 'Nombre_CT': str(self.Nombre_CT), 'ID_CT': str(self.id_ct), 'Graph_data_error': str(graph_data_error)}, ignore_index=True)
+        #         graph_data_error_df.to_csv(graph_data_error_file, index = False, encoding='Latin9', sep=';', decimal=',')
+        #         del graph_data_error_df
+        #     logger.debug('Graph_data_error actualizado correctamente en el .csv.')
+        # except:
+        #     logger.error('Error al guardar graph_data_error en el .csv. Mantener el archivo cerrado para poder sobreescribir.')
+          
+            
+        #Modelo 2 de archivo csv más completo.    
         try:
             #Se actualiza en el .csv el valor de la variable graph_data_error para este CT.
             graph_data_error_file = self.ruta_raiz + 'Graph_data_error.csv'
+            
+            #Se genera un string que contiene información de interés de la red (longitudes y número de cups de cada nodo del CT)
+            if graph_data_error == 3:
+                info_red = '[/]'
+            else:
+                info_red = '['
+                lista_nodos_resultados = [str(self.id_ct)]
+                lista_temp = list(np.unique(list(G.edges(str(self.id_ct)))))
+                lista_temp.remove(str(self.id_ct))
+                lista_nodos_resultados = lista_nodos_resultados + lista_temp
+                for i in lista_temp:
+                    lista_temp2 = list(np.unique(list(G.edges(i))))
+                    lista_temp2.remove(i)
+                    lista_temp2.remove(str(self.id_ct))
+                    for j in lista_temp2:
+                        if G.nodes[j]['Tipo_Nodo'] != 'CUPS_TR':# and G.nodes[j]['Num_CUPS_clientes'] != 0: #No considerar los niveles de tensión sin clientes conectados.
+                            lista_nodos_resultados.append(j)
+                del lista_temp, lista_temp2
+                for i in lista_nodos_resultados:
+                    info_red = info_red + '"' + str(i) + '":' + str(round(G.nodes[i]['Longitud_red'], 3)) + ';' + str(G.nodes[i]['Num_CUPS_clientes']) + '/'
+                info_red = info_red + ']'
+                    
+                
             #Se comprueba si existe el archivo .csv que contiene la variable graph_data_error de los CTs simulados. Si no existe se crea uno nuevo.
             if path.exists(graph_data_error_file):
                 #Hay veces que el archivo está creado pero está vacío y da error de lectura porque no tiene columnas.
                 try:
                     graph_data_error_df = pd.read_csv(graph_data_error_file, encoding='Latin9', header=0, sep=';', quotechar='\"', decimal=',')
                     #Se comprueba si existe un registro para este CT.
-                    ct_prov = graph_data_error_df.loc[(graph_data_error_df['Nombre_CT'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == self.id_ct)].reset_index(drop=True)
+                    ct_prov = graph_data_error_df.loc[(graph_data_error_df['CT_NOMBRE'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == self.id_ct)].reset_index(drop=True)
                     if len(ct_prov) > 0:
-                        #Se actualizan los valores de fechahora y graph_data_error.
-                        graph_data_error_df.loc[(graph_data_error_df['Nombre_CT'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == (self.id_ct)), 'Fechahora'] = str(time.strftime("%d/%m/%y")) + ' - ' + str(time.strftime("%H:%M:%S"))
-                        graph_data_error_df.loc[(graph_data_error_df['Nombre_CT'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == (self.id_ct)), 'Graph_data_error'] = graph_data_error
+                        #Se actualizan los valores de fechahora y graph_data_error anteriores.
+                        graph_data_error_df.loc[(graph_data_error_df['CT_NOMBRE'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == (self.id_ct)), 'Fechahora_anterior'] = str(graph_data_error_df.loc[(graph_data_error_df['CT_NOMBRE'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == (self.id_ct)), 'Fechahora_actual'].reset_index(drop=True)[0])
+                        graph_data_error_df.loc[(graph_data_error_df['CT_NOMBRE'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == (self.id_ct)), 'Graph_data_error_anterior'] = str(int(graph_data_error_df.loc[(graph_data_error_df['CT_NOMBRE'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == (self.id_ct)), 'Graph_data_error_actual'].reset_index(drop=True)[0]))
+                        #Se guardan los valores de fechahora y graph_data_error como actuales.
+                        graph_data_error_df.loc[(graph_data_error_df['CT_NOMBRE'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == (self.id_ct)), 'Fechahora_actual'] = str(time.strftime("%d/%m/%y")) + ' - ' + str(time.strftime("%H:%M:%S"))
+                        graph_data_error_df.loc[(graph_data_error_df['CT_NOMBRE'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == (self.id_ct)), 'Graph_data_error_actual'] = graph_data_error
+                        graph_data_error_df.loc[(graph_data_error_df['CT_NOMBRE'] == str(self.Nombre_CT)) & (graph_data_error_df['ID_CT'] == (self.id_ct)), 'Info_red'] = info_red
+                        
                         graph_data_error_df.to_csv(graph_data_error_file, index = False, encoding='Latin9', sep=';', decimal=',')
                     else:
-                        graph_data_error_df = graph_data_error_df.append({'Fechahora': str(time.strftime("%d/%m/%y")) + ' - ' + str(time.strftime("%H:%M:%S")), 'Nombre_CT': str(self.Nombre_CT), 'ID_CT': str(self.id_ct), 'Graph_data_error': str(graph_data_error)}, ignore_index=True)
+                        graph_data_error_df = graph_data_error_df.append({'ID_CT': str(self.id_ct), 'CT_NOMBRE': str(self.Nombre_CT), 'Fechahora_anterior': str('1/1/1900') + ' - ' + str('00:00:00'), 'Graph_data_error_anterior': str(''), 'Fechahora_actual': str(time.strftime("%d/%m/%y")) + ' - ' + str(time.strftime("%H:%M:%S")), 'Graph_data_error_actual': str(graph_data_error), 'Info_red': info_red}, ignore_index=True)
                         graph_data_error_df.to_csv(graph_data_error_file, index = False, encoding='Latin9', sep=';', decimal=',')
                         del graph_data_error_df
                 except:
-                    graph_data_error_df = pd.DataFrame(columns=['Fechahora', 'Nombre_CT', 'ID_CT', 'Graph_data_error'])
-                    graph_data_error_df = graph_data_error_df.append({'Fechahora': str(time.strftime("%d/%m/%y")) + ' - ' + str(time.strftime("%H:%M:%S")), 'Nombre_CT': str(self.Nombre_CT), 'ID_CT': str(self.id_ct), 'Graph_data_error': str(graph_data_error)}, ignore_index=True)
+                    graph_data_error_df = pd.DataFrame(columns=['ID_CT', 'CT_NOMBRE', 'Fechahora_anterior', 'Graph_data_error_anterior', 'Fechahora_actual', 'Graph_data_error_actual', 'Info_red'])
+                    graph_data_error_df = graph_data_error_df.append({'ID_CT': str(self.id_ct), 'CT_NOMBRE': str(self.Nombre_CT), 'Fechahora_anterior': str('1/1/1900') + ' - ' + str('00:00:00'), 'Graph_data_error_anterior': str(-1), 'Fechahora_actual': str(time.strftime("%d/%m/%y")) + ' - ' + str(time.strftime("%H:%M:%S")), 'Graph_data_error_actual': str(graph_data_error), 'Info_red': info_red}, ignore_index=True)
                     graph_data_error_df.to_csv(graph_data_error_file, index = False, encoding='Latin9', sep=';', decimal=',')
                     del graph_data_error_df
             else:
-                graph_data_error_df = pd.DataFrame(columns=['Fechahora', 'Nombre_CT', 'ID_CT', 'Graph_data_error'])
-                graph_data_error_df = graph_data_error_df.append({'Fechahora': str(time.strftime("%d/%m/%y")) + ' - ' + str(time.strftime("%H:%M:%S")), 'Nombre_CT': str(self.Nombre_CT), 'ID_CT': str(self.id_ct), 'Graph_data_error': str(graph_data_error)}, ignore_index=True)
+                # if graph_data_error == 3:
+                #     info_red = '[/]'
+                # else:
+                #     info_red = '['
+                #     lista_nodos_resultados = [str(self.id_ct)]
+                #     lista_temp = list(np.unique(list(G.edges(str(self.id_ct)))))
+                #     lista_temp.remove(str(self.id_ct))
+                #     lista_nodos_resultados = lista_nodos_resultados + lista_temp
+                #     for i in lista_temp:
+                #         lista_temp2 = list(np.unique(list(G.edges(i))))
+                #         lista_temp2.remove(i)
+                #         lista_temp2.remove(str(self.id_ct))
+                #         for j in lista_temp2:
+                #             if G.nodes[j]['Tipo_Nodo'] != 'CUPS_TR':# and G.nodes[j]['Num_CUPS_clientes'] != 0: #No considerar los niveles de tensión sin clientes conectados.
+                #                 lista_nodos_resultados.append(j)
+                #     del lista_temp, lista_temp2
+                #     for i in lista_nodos_resultados:
+                #         info_red = info_red + '"' + str(i) + '":' + str(G.nodes[i]['Longitud_red']) + ';' + str(G.nodes[i]['Num_CUPS_clientes']) + '/'
+                #     info_red = info_red + ']'
+                    # for node, data in G.nodes(data=True):
+                        
+                graph_data_error_df = pd.DataFrame(columns=['ID_CT', 'CT_NOMBRE', 'Fechahora_anterior', 'Graph_data_error_anterior', 'Fechahora_actual', 'Graph_data_error_actual', 'Info_red[m;CUPS]'])
+                graph_data_error_df = graph_data_error_df.append({'ID_CT': str(self.id_ct), 'CT_NOMBRE': str(self.Nombre_CT), 'Fechahora_anterior': str('1/1/1900') + ' - ' + str('00:00:00'), 'Graph_data_error_anterior': str(-1), 'Fechahora_actual': str(time.strftime("%d/%m/%y")) + ' - ' + str(time.strftime("%H:%M:%S")), 'Graph_data_error_actual': str(graph_data_error), 'Info_red[m;CUPS]': info_red}, ignore_index=True)
                 graph_data_error_df.to_csv(graph_data_error_file, index = False, encoding='Latin9', sep=';', decimal=',')
                 del graph_data_error_df
             logger.debug('Graph_data_error actualizado correctamente en el .csv.')
         except:
             logger.error('Error al guardar graph_data_error en el .csv. Mantener el archivo cerrado para poder sobreescribir.')
+            
         return
 
 
@@ -255,6 +347,7 @@ class Solve_Graph:
         ##############################################################################
         #Archivo de nodos
         df_nodos = pd.read_csv(self.archivo_topologia, encoding='Latin9', header=0, sep=';', quotechar='\"', decimal=',')
+        df_nodos['CT_NOMBRE'] = df_nodos['CT_NOMBRE'].apply(str).str.strip(' ')
         df_nodos_ct = df_nodos[(df_nodos['CT_NOMBRE'] == self.Nombre_CT) & (df_nodos['CT'] == self.id_ct)].reset_index(drop=True).copy()
         #Se eliminan todos los valores NaN que pueda haber en las columnas tipo nodo y coordenadas, reemplazándolos por un caracter vacío.
         df_nodos_ct.TIPO_NODO.fillna('', inplace=True) 
@@ -336,6 +429,7 @@ class Solve_Graph:
         
         #Archivo de trazas
         df_traza = pd.read_csv(self.archivo_traza, encoding='Latin9', header=0, sep=';', quotechar='\"', decimal = ',')
+        df_traza['CT_NOMBRE'] = df_traza['CT_NOMBRE'].apply(str).str.strip(' ')
         df_traza_ct = df_traza[(df_traza['CT_NOMBRE'] == self.Nombre_CT) & (df_traza['CT'] == self.id_ct)].reset_index(drop=True).copy()
         #Se elimintan todos los valores NaN que pueda haber en la columna trafo y cable
         df_traza_ct.TRAFO.fillna('', inplace=True)
@@ -762,16 +856,19 @@ class Solve_Graph:
                 logger.error('TRAZAS: Se han encontrado más de un 20% de trazas con longitud = 0. Puede deberse a coordenadas incorrectas. No se puede generar un grafo aceptable.')
                 logger.error('CREACIÓN DEL GRAFO ABORTADA. ERRORES INCOMPATIBLES CON UNA CORRECTA DEFINICIÓN. Graph_data_error = ' + str(graph_data_error))
                 print('CREACIÓN DEL GRAFO ABORTADA. ERRORES INCOMPATIBLES CON UNA CORRECTA DEFINICIÓN. Graph_data_error = ' + str(graph_data_error))
-                self.update_graph_data_error(graph_data_error)
+                # self.update_graph_data_error(G, graph_data_error)
                 # return None
                 # return graph_data_error, 0, 0, 0, 0, 0, 0
+                G=[]
                 df_nodos_ct=[]
                 df_traza_ct=[]
                 df_ct_cups_ct=[]
                 df_matr_dist=[]
                 LBT_ID_list=[]
                 cups_agregado_CT=[]
-                return graph_data_error, df_nodos_ct, df_traza_ct, df_ct_cups_ct, df_matr_dist, LBT_ID_list, cups_agregado_CT
+                df_info_trafos_ct=[]
+                self.update_graph_data_error(G, graph_data_error)
+                return graph_data_error, df_nodos_ct, df_traza_ct, df_ct_cups_ct, df_matr_dist, LBT_ID_list, cups_agregado_CT, df_info_trafos_ct
                 # return graph_data_error
             else:
                 logger.debug('.CSV de trazas leído y filtrado. df_traza_ct = ' + str(len(df_traza_ct)))
@@ -803,6 +900,7 @@ class Solve_Graph:
  
         #Archivo que relaciona CUPS y del CT.
         df_ct_cups = pd.read_csv(self.archivo_ct_cups, encoding='Latin9', header=0, sep=';', quotechar='\"', decimal=',')
+        df_ct_cups['CT_NOMBRE'] = df_ct_cups['CT_NOMBRE'].apply(str).str.strip(' ')
         df_ct_cups_ct = df_ct_cups[(df_ct_cups['CT_NOMBRE'] == self.Nombre_CT) & (df_ct_cups['CT'] == self.id_ct)].drop_duplicates(keep = 'first').reset_index(drop=True).copy()
         #Se elimintan todos los valores NaN que pueda haber
         df_ct_cups_ct.CUPS.fillna('', inplace=True)
@@ -996,31 +1094,37 @@ class Solve_Graph:
                     #Si no hay CUPS se aborta la ejecución.
                     if graph_data_error <= 3: #Es necesario comprobar que no tiene un valor mayor (más defectos en el grafo), para no sustituirlo por un valor menor.
                         graph_data_error = 3
-                    self.update_graph_data_error(graph_data_error)
+                    # self.update_graph_data_error(G, graph_data_error)
                     # return None
                     # return graph_data_error, 0, 0, 0, 0, 0, 0
+                    G=[]
                     df_nodos_ct=[]
                     df_traza_ct=[]
                     df_ct_cups_ct=[]
                     df_matr_dist=[]
                     LBT_ID_list=[]
                     cups_agregado_CT=[]
-                    return graph_data_error, df_nodos_ct, df_traza_ct, df_ct_cups_ct, df_matr_dist, LBT_ID_list, cups_agregado_CT
+                    df_info_trafos_ct=[]
+                    self.update_graph_data_error(G, graph_data_error)
+                    return graph_data_error, df_nodos_ct, df_traza_ct, df_ct_cups_ct, df_matr_dist, LBT_ID_list, cups_agregado_CT, df_info_trafos_ct
                     # return graph_data_error
             except:
                 #Ante cualquier error no contemplado se aborta la ejecución
                 if graph_data_error <= 3: #Es necesario comprobar que no tiene un valor mayor (más defectos en el grafo), para no sustituirlo por un valor menor.
                     graph_data_error = 3
-                self.update_graph_data_error(graph_data_error)
+                # self.update_graph_data_error(G, graph_data_error)
                 # return None
                 # return graph_data_error, 0, 0, 0, 0, 0, 0
+                G=[]
                 df_nodos_ct=[]
                 df_traza_ct=[]
                 df_ct_cups_ct=[]
                 df_matr_dist=[]
                 LBT_ID_list=[]
                 cups_agregado_CT=[]
-                return graph_data_error, df_nodos_ct, df_traza_ct, df_ct_cups_ct, df_matr_dist, LBT_ID_list, cups_agregado_CT
+                df_info_trafos_ct=[]
+                self.update_graph_data_error(G, graph_data_error)
+                return graph_data_error, df_nodos_ct, df_traza_ct, df_ct_cups_ct, df_matr_dist, LBT_ID_list, cups_agregado_CT, df_info_trafos_ct
                 # return graph_data_error
 
 
@@ -1145,6 +1249,23 @@ class Solve_Graph:
             logger.error('Error al calcular la matriz de distancias. Revisar datos.')
             if graph_data_error <= 3: #Es necesario comprobar que no tiene un valor mayor (más defectos en el grafo), para no sustituirlo por un valor menor.
                 graph_data_error = 3
+                
+        #Caso de XIXTO 14201, que no tiene ni nodos ni trazas y solo hay el CUPS del CT.
+        if len(df_traza_ct) == 0 and len(df_ct_cups_ct) == len(cups_agregado_CT):
+            if graph_data_error <= 3: #Es necesario comprobar que no tiene un valor mayor (más defectos en el grafo), para no sustituirlo por un valor menor.
+                graph_data_error = 3
+            G=[]
+            df_nodos_ct=[]
+            df_traza_ct=[]
+            df_ct_cups_ct=[]
+            df_matr_dist=[]
+            LBT_ID_list=[]
+            cups_agregado_CT=[]
+            df_info_trafos_ct=[]
+            self.update_graph_data_error(G, graph_data_error)
+            return graph_data_error, df_nodos_ct, df_traza_ct, df_ct_cups_ct, df_matr_dist, LBT_ID_list, cups_agregado_CT, df_info_trafos_ct
+                
+            
             
         #Se comprueba que las coordenadas de los CUPS del CT son las correctas.
         for index, row in cups_agregado_CT.iterrows():
@@ -1173,13 +1294,30 @@ class Solve_Graph:
         if len(TRAFOS_LIST) != len(cups_agregado_CT):
             logger.error('Posible error de identificación de Trafos y/o de identificación de CUPS en la cabecera. cups_agregado_CT: ' + str(cups_agregado_CT))
            
+            
+        #Se lee el archivo con la información de los trafos y se filtra para este CT.
+        df_info_trafos = pd.read_csv(self.archivo_trafos_mt_bt, encoding='Latin9', header=0, sep=';', quotechar='\"', decimal=',')
+        df_info_trafos_ct = df_info_trafos[(df_info_trafos['NOMBRE CD'] == self.Nombre_CT) & (df_info_trafos['NUMERO CD'] == self.id_ct)].reset_index(drop=True).copy()
+        #Se eliminan todos los valores NaN que pueda haber en las columnas tipo nodo y coordenadas, reemplazándolos por un caracter vacío.
+        df_info_trafos_ct['PERDIDAS VACIO'].fillna('', inplace=True) 
+        df_info_trafos_ct['PERDIDAS CORTO'].fillna('', inplace=True)
+        df_info_trafos_ct['MODELO'].fillna('', inplace=True)
+        df_info_trafos_ct['CDT'].fillna('', inplace=True)
+        df_info_trafos_ct = df_info_trafos_ct.drop_duplicates(subset=['CDT', 'MODELO', 'PERDIDAS CORTO', 'PERDIDAS VACIO'], keep = 'first').reset_index(drop=True)
+        if len(df_info_trafos_ct) > 0:
+            logger.debug('Localizados ' + str(len(df_info_trafos_ct)) + ' trafos con información en el .csv de trafos.')
+        else:
+            logger.error('Sin información de trafos. Imposible calcular pérdidas en los trafos.')
+            if graph_data_error <= 2: #Es necesario comprobar que no tiene un valor mayor (más defectos en el grafo), para no sustituirlo por un valor menor.
+                graph_data_error = 2   
+        del df_info_trafos
         
-        return graph_data_error, df_nodos_ct, df_traza_ct, df_ct_cups_ct, df_matr_dist, LBT_ID_list, cups_agregado_CT
+        return graph_data_error, df_nodos_ct, df_traza_ct, df_ct_cups_ct, df_matr_dist, LBT_ID_list, cups_agregado_CT, df_info_trafos_ct
 
 
 
 
-    def genera_grafo(self, G, df_nodos_ct, df_traza_ct, LBT_ID_list, cups_agregado_CT, dicc_colors, graph_data_error):
+    def genera_grafo(self, G, df_nodos_ct, df_traza_ct, LBT_ID_list, cups_agregado_CT, dicc_colors, graph_data_error, df_info_trafos_ct):
         """
         
         Función para generar el grafo con la topología y las trazas dadas.
@@ -1188,6 +1326,7 @@ class Solve_Graph:
         
         Parámetros
         ----------
+        G : Grafo del CT.
         df_nodos_ct : DataFrame con los nodos del CT indicado (archivo Topología). Se obtiene del archivo 'archivo_nodos'.
         df_traza_ct : DataFrame con las trazas del CT indicado (archivo Trazas). Se obtiene del archivo 'archivo_trazas'.
         LBT_ID_list : Listado de líneas que parten del CT.
@@ -1223,10 +1362,41 @@ class Solve_Graph:
             except:
                 id_ct_coord_y = 0
                 
-            G.add_node(str(self.id_ct), TR='CT', P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', QBT_TENSION=400)
-            G.add_node(str(self.id_ct) + '_' + str(row.TRAFO), TR=str(row.TRAFO), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=400)
+            G.add_node(str(self.id_ct), TR='CT', P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', QBT_TENSION=400, Longitud_red=0, Num_CUPS_clientes=0)
+            
+            #Se lee la información del trafo para guardarla como atributos para el cálculo de pérdidas
+            if len(df_info_trafos_ct.loc[df_info_trafos_ct.CDT == str(row.TRAFO)]) > 0:
+                p_vacio = df_info_trafos_ct.loc[df_info_trafos_ct.CDT == str(row.TRAFO)]['PERDIDAS VACIO'].reset_index(drop=True)[0]
+                try:
+                    if float(p_vacio) >= 0:
+                        aa='Todo ok'
+                        del aa
+                except:
+                    p_vacio = 0
+                p_corto = df_info_trafos_ct.loc[df_info_trafos_ct.CDT == str(row.TRAFO)]['PERDIDAS CORTO'].reset_index(drop=True)[0]
+                try:
+                    if float(p_corto) >= 0:
+                        aa='Todo ok'
+                        del aa
+                except:
+                    p_corto = 0
+                modelo = df_info_trafos_ct.loc[df_info_trafos_ct.CDT == str(row.TRAFO)]['MODELO'].reset_index(drop=True)[0]
+                try:
+                    if len(modelo) > 0:
+                        aa='Todo ok'
+                        del aa
+                    else:
+                        modelo = '/'
+                except:
+                    modelo = '/'
+            else:
+                p_vacio = 0
+                p_corto = 0
+                modelo = '/'
+                
+            G.add_node(str(self.id_ct) + '_' + str(row.TRAFO), TR=str(row.TRAFO), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=400, PERDIDAS_VACIO=float(p_vacio), PERDIDAS_CORTO=float(p_corto), MODELO=str(modelo), Longitud_red=0, Num_CUPS_clientes=0)
             if (str(self.id_ct), str(self.id_ct) + '_' + str(row.TRAFO),0) not in G.edges:
-                G.add_edge(str(self.id_ct), str(self.id_ct) + '_' + str(row.TRAFO), TR=str(row.TRAFO), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE=df_traza_ct['CABLE'][0], QBT_TENSION=400)
+                G.add_edge(str(self.id_ct), str(self.id_ct) + '_' + str(row.TRAFO), TR=str(row.TRAFO), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE='', QBT_TENSION=400)
             #Se añaden los niveles de tensión existentes:
             QBT_tension = row.TRAFO.replace('R','')
             if row.CUPS.find(QBT_tension + '1') >= 0:
@@ -1236,9 +1406,9 @@ class Solve_Graph:
             else:
                 logger.error('Error al encontrar el nivel de tensión del CUPS ' + str(row.CUPS) + '. Trafo ' + str(row.TRAFO))
                 tension_tr = 0
-            G.add_node(str(row.TRAFO) + '_' + str(tension_tr), TR=str(row.TRAFO), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=tension_tr)
+            G.add_node(str(row.TRAFO) + '_' + str(tension_tr), TR=str(row.TRAFO), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=tension_tr, Longitud_red=0, Num_CUPS_clientes=0)
             if (str(self.id_ct) + '_' + str(row.TRAFO), str(row.TRAFO) + '_' + str(tension_tr), 0) not in G.edges:
-                G.add_edge(str(self.id_ct) + '_' + str(row.TRAFO), str(row.TRAFO) + '_' + str(tension_tr), TR=str(row.TRAFO), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE=df_traza_ct['CABLE'][0], QBT_TENSION=tension_tr)
+                G.add_edge(str(self.id_ct) + '_' + str(row.TRAFO), str(row.TRAFO) + '_' + str(tension_tr), TR=str(row.TRAFO), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE='', QBT_TENSION=tension_tr)
             
             
         #Si no hay CUPS de agregado en el CT no se agregan los nodos correspondientes, por lo que hay que añadir al menos el CT y los trafos.
@@ -1251,16 +1421,48 @@ class Solve_Graph:
             id_ct_coord_y = df_nodos_ct[df_nodos_ct.CT_Y>0].CT_Y.drop_duplicates(keep='first').reset_index(drop=True)[0]
             
             #Se agrega el CT
-            G.add_node(str(self.id_ct), TR='CT', P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', QBT_TENSION=400)
-            
+            G.add_node(str(self.id_ct), TR='CT', P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', QBT_TENSION=400, Longitud_red=0, Num_CUPS_clientes=0)
+   
+                
             #Se agregan los trafos
             for row in prov:
-                G.add_node(str(self.id_ct) + '_' + str(row), TR=str(row), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=400)
+                #Se lee la información del trafo para guardarla como atributos para el cálculo de pérdidas
+                if len(df_info_trafos_ct.loc[df_info_trafos_ct.CDT == str(row)]) > 0:
+                    p_vacio = df_info_trafos_ct.loc[df_info_trafos_ct.CDT == str(row)]['PERDIDAS VACIO'].reset_index(drop=True)[0]
+                    try:
+                        if float(p_vacio) >= 0:
+                            aa='Todo ok'
+                            del aa
+                    except:
+                        p_vacio = 0
+                    p_corto = df_info_trafos_ct.loc[df_info_trafos_ct.CDT == str(row)]['PERDIDAS CORTO'].reset_index(drop=True)[0]
+                    try:
+                        if float(p_corto) >= 0:
+                            aa='Todo ok'
+                            del aa
+                    except:
+                        p_corto = 0
+                    modelo = df_info_trafos_ct.loc[df_info_trafos_ct.CDT == str(row)]['MODELO'].reset_index(drop=True)[0]
+                    try:
+                        if len(modelo) > 0:
+                            aa='Todo ok'
+                            del aa
+                        else:
+                            modelo = '/'
+                    except:
+                        modelo = '/'
+                else:
+                    p_vacio = 0
+                    p_corto = 0
+                    modelo = '/'
+                
+                
+                G.add_node(str(self.id_ct) + '_' + str(row), TR=str(row), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=400, PERDIDAS_VACIO=float(p_vacio), PERDIDAS_CORTO=float(p_corto), MODELO=str(modelo), Longitud_red=0, Num_CUPS_clientes=0)
                 if (str(self.id_ct), str(self.id_ct) + '_' + str(row),0) not in G.edges:
                     G.add_edge(str(self.id_ct), str(self.id_ct) + '_' + str(row), TR=str(row), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE=df_traza_ct['CABLE'][0], QBT_TENSION=400)
                 #Se añaden los niveles de tensión existentes. En este caso solo de 400V, porque no se sabe si hay CUPS en 230.
                 tension_tr = 400
-                G.add_node(str(row) + '_' + str(tension_tr), TR=str(row), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=tension_tr)
+                G.add_node(str(row) + '_' + str(tension_tr), TR=str(row), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=tension_tr, Longitud_red=0, Num_CUPS_clientes=0)
                 if (str(self.id_ct) + '_' + str(row), str(row) + '_' + str(tension_tr), 0) not in G.edges:
                     G.add_edge(str(self.id_ct) + '_' + str(row), str(row) + '_' + str(tension_tr), TR=str(row), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE=df_traza_ct['CABLE'][0], QBT_TENSION=tension_tr)
          
@@ -1277,10 +1479,41 @@ class Solve_Graph:
                 id_ct_coord_y = cups_agregado_CT.sort_values('CUPS_Y', ascending=False).reset_index(drop=True).CUPS_Y[0]
             #Por si acaso no se han agregado el CT y loc CT_TR se comprueba si existen los nodos y los enlaces.
             if str(self.id_ct) not in G.nodes():
-                G.add_node(str(self.id_ct), TR='CT', P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', QBT_TENSION=400)
+                G.add_node(str(self.id_ct), TR='CT', P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', QBT_TENSION=400, Longitud_red=0, Num_CUPS_clientes=0)
             
             if str(self.id_ct) + '_' + str(LBT_ID_list['TRAFO'][i]) not in G.nodes():
-                G.add_node(str(self.id_ct) + '_' + str(LBT_ID_list['TRAFO'][i]), TR=str(LBT_ID_list['TRAFO'][i]), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=400)
+                #Se lee la información del trafo para guardarla como atributos para el cálculo de pérdidas
+                if len(df_info_trafos_ct.loc[df_info_trafos_ct.CDT == str(LBT_ID_list['TRAFO'][i])]) > 0:
+                    p_vacio = df_info_trafos_ct.loc[df_info_trafos_ct.CDT == str(LBT_ID_list['TRAFO'][i])]['PERDIDAS VACIO'].reset_index(drop=True)[0]
+                    try:
+                        if float(p_vacio) >= 0:
+                            aa='Todo ok'
+                            del aa
+                    except:
+                        p_vacio = 0
+                    p_corto = df_info_trafos_ct.loc[df_info_trafos_ct.CDT == str(LBT_ID_list['TRAFO'][i])]['PERDIDAS CORTO'].reset_index(drop=True)[0]
+                    try:
+                        if float(p_corto) >= 0:
+                            aa='Todo ok'
+                            del aa
+                    except:
+                        p_corto = 0
+                    modelo = df_info_trafos_ct.loc[df_info_trafos_ct.CDT == str(LBT_ID_list['TRAFO'][i])]['MODELO'].reset_index(drop=True)[0]
+                    try:
+                        if len(modelo) > 0:
+                            aa='Todo ok'
+                            del aa
+                        else:
+                            modelo = '/'
+                    except:
+                        modelo = '/'
+                else:
+                    p_vacio = 0
+                    p_corto = 0
+                    modelo = '/'
+            
+            # if str(self.id_ct) + '_' + str(LBT_ID_list['TRAFO'][i]) not in G.nodes():
+                G.add_node(str(self.id_ct) + '_' + str(LBT_ID_list['TRAFO'][i]), TR=str(LBT_ID_list['TRAFO'][i]), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=400,PERDIDAS_VACIO=float(p_vacio), PERDIDAS_CORTO=float(p_corto), MODELO=str(modelo), Longitud_red=0, Num_CUPS_clientes=0)
             
             if (str(self.id_ct), str(self.id_ct) + '_' + str(LBT_ID_list['TRAFO'][i]),0) not in G.edges:
                 G.add_edge(str(self.id_ct), str(self.id_ct) + '_' + str(LBT_ID_list['TRAFO'][i]), TR=str(LBT_ID_list['TRAFO'][i]), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE=df_traza_ct['CABLE'][0], QBT_TENSION=400)
@@ -1288,14 +1521,14 @@ class Solve_Graph:
             #Se añaden los niveles de tensión existentes. En este caso solo de 400V, porque no se sabe si hay CUPS en 230.
             tension_tr = 400
             if str(LBT_ID_list['TRAFO'][i] + '_' + str(tension_tr)) not in G.nodes:
-                G.add_node(str(LBT_ID_list['TRAFO'][i]) + '_' + str(tension_tr), TR=str(LBT_ID_list['TRAFO'][i]), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=tension_tr)
+                G.add_node(str(LBT_ID_list['TRAFO'][i]) + '_' + str(tension_tr), TR=str(LBT_ID_list['TRAFO'][i]), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=tension_tr, Longitud_red=0, Num_CUPS_clientes=0)
                 if (str(self.id_ct) + '_' + str(LBT_ID_list['TRAFO'][i]), str(LBT_ID_list['TRAFO'][i]) + '_' + str(tension_tr), 0) not in G.edges:
-                    G.add_edge(str(self.id_ct) + '_' + str(LBT_ID_list['TRAFO'][i]), str(LBT_ID_list['TRAFO'][i]) + '_' + str(tension_tr), TR=str(LBT_ID_list['TRAFO'][i]), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE=df_traza_ct['CABLE'][0], QBT_TENSION=tension_tr)
+                    G.add_edge(str(self.id_ct) + '_' + str(LBT_ID_list['TRAFO'][i]), str(LBT_ID_list['TRAFO'][i]) + '_' + str(tension_tr), TR=str(LBT_ID_list['TRAFO'][i]), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE='', QBT_TENSION=tension_tr)
          
             
             # G.add_edge(self.id_ct, str(self.id_ct) + '_' + str(LBT_ID_list['LBT_ID'][i]), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE=df_traza_ct['CABLE'][0])
             # G.add_edge(str(self.id_ct) + '_' + str(LBT_ID_list['TRAFO'][i]), str(self.id_ct) + '_' + str(LBT_ID_list['LBT_ID'][i]), TR=str(LBT_ID_list['TRAFO'][i]), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE=df_traza_ct['CABLE'][0])
-            G.add_edge(str(LBT_ID_list['TRAFO'][i]) + '_' + str(tension_tr), str(self.id_ct) + '_' + str(LBT_ID_list['LBT_ID'][i]), TR=str(LBT_ID_list['TRAFO'][i]), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE=df_traza_ct['CABLE'][0], QBT_TENSION=tension_tr)
+            G.add_edge(str(LBT_ID_list['TRAFO'][i]) + '_' + str(tension_tr), str(self.id_ct) + '_' + str(LBT_ID_list['LBT_ID'][i]), TR=str(LBT_ID_list['TRAFO'][i]), Long=0, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE='', QBT_TENSION=tension_tr)
             
             #Se añaden también los atributos del nodo que se acaba de crear con idct_lbt
             G.add_node(str(self.id_ct) + '_' + str(LBT_ID_list['LBT_ID'][i]), TR=str(LBT_ID_list['TRAFO'][i]), P_R_0=0, Q_R_0=0, P_S_0=0, Q_S_0=0, P_T_0=0, Q_T_0=0, Tipo_Nodo='CT_Virtual', pos=(float(str(id_ct_coord_x).replace(',','.')), float(str(id_ct_coord_y).replace(',','.'))), color_nodo='red', N_ant = 1, QBT_TENSION=400)
@@ -1476,7 +1709,11 @@ class Solve_Graph:
                         #Se intenta coger el mismo tipo de cable que el de el primer enlace que dependa de ese nodo. Sino se coge uno al azar de la red.
                         tipo_cable = G.edges[list(G.edges(nodo))[0][0], list(G.edges(nodo))[0][1], 0]['CABLE']
                     except:
-                        tipo_cable = df_traza_ct.CABLE[0] #df_traza_ct.loc[df_traza_ct['NODO_ORIGEN_LBT_ID'] == nodo_origen]['CABLE'].reset_index(drop=True)[0]
+                        try:
+                            #Cuidado, si df_traza_ct está vacío dará error esta instrucción
+                            tipo_cable = df_traza_ct.CABLE[0] #df_traza_ct.loc[df_traza_ct['NODO_ORIGEN_LBT_ID'] == nodo_origen]['CABLE'].reset_index(drop=True)[0]
+                        except:
+                            tipo_cable = ''
                 except:
                     nodo_origen = str(self.id_ct) + '_' + str(LBT_ID_list.loc[LBT_ID_list.TRAFO == data['TR']]['LBT_ID'].reset_index(drop=True)[0]) #LBT_ID_list.LBT_ID[0]
                     try:
@@ -1489,7 +1726,11 @@ class Solve_Graph:
                         #Se intenta coger el mismo tipo de cable que el de el primer enlace que dependa de ese nodo. Sino se coge uno al azar de la red.
                         tipo_cable = G.edges[list(G.edges(nodo))[0][0], list(G.edges(nodo))[0][1], 0]['CABLE']
                     except:
-                        tipo_cable = df_traza_ct.CABLE[0] #df_traza_ct.loc[df_traza_ct['NODO_ORIGEN_LBT_ID'] == nodo_origen]['CABLE'].reset_index(drop=True)[0]
+                        try:
+                            #Cuidado, si df_traza_ct está vacío dará error esta instrucción
+                            tipo_cable = df_traza_ct.CABLE[0] #df_traza_ct.loc[df_traza_ct['NODO_ORIGEN_LBT_ID'] == nodo_origen]['CABLE'].reset_index(drop=True)[0]
+                        except:
+                            tipo_cable = ''
                         #continue
                     #continue
                 G.add_edge(nodo_origen, nodo, 0, ID_traza = 0, TR=str(G.nodes[nodo]['TR']), Long=longitud, P_R_Linea=0, Q_R_Linea=0, P_S_Linea=0, Q_S_Linea=0, P_T_Linea=0, Q_T_Linea=0, CABLE=tipo_cable, QBT_TENSION=400)#, ID_repeat=0) #ID_repeat. 0: solo hay un enlace. >=1: más de 1 enlace, y número del enlace.
@@ -1712,6 +1953,24 @@ class Solve_Graph:
     
     
     def add_cups_grafo(self, G, df_ct_cups_ct, df_matr_dist, id_ct, LBT_ID_list, dicc_colors):
+        """
+        
+        Función para añadir los CUPS al grafo, con los enlaces a los nodos más cercanos calculados en la matriz de distancias.
+        
+        Parámetros
+        ----------
+        G : Grafo del CT.
+        df_ct_cups_ct : DataFrame con la relación de CUPS del CT a analizar con los posibles errores corregidos.
+        df_matr_dist : DataFrame con los CUPS del CT asociados al nodo más cercano que coincide con el trafo al que está conectado.
+        id_ct : Identificador del CT.
+        LBT_ID_list : Lista de las LBTs que componen el grafo.
+        dicc_colors : Diccionario de colores para definir el atributo de color de cada nodo según el tipo.
+                    
+        
+        Retorno
+        -------
+        G : Grafo con los CUPS añadidos.
+        """
         logger = logging.getLogger('add_cups_grafo')
         #Se recorre el DF con los CUPS y se asocia cada CUP al nodo correspondiente.
         for index, row in df_ct_cups_ct.iterrows():
@@ -1969,6 +2228,14 @@ class Solve_Graph:
                     G.nodes[str(row.CUPS)]['TR'] = trafo_cup
                     G.nodes[str(row.CUPS)]['QBT_TENSION'] = qbt_tension
                     
+                    #Se suma 1 al valor del atributo de los nodos del CT que cuentan el número de CUPS de clientes conectados aguas abajo.
+                    try:
+                        G.nodes[str(self.id_ct)]['Num_CUPS_clientes'] += 1
+                        G.nodes[str(self.id_ct) + '_' + str(G.nodes[arqueta_cup_lbt_id]['TR'])]['Num_CUPS_clientes'] += 1
+                        G.nodes[str(trafo_cup) + '_' + str(G.nodes[arqueta_cup_lbt_id]['QBT_TENSION'])]['Num_CUPS_clientes'] += 1
+                    except:
+                        logging.error('Error al intentar sumar 1 al atributo "Num_CUPS_clientes" del CT, trafo o nivel de tensión para el CUPS: ' + str(row.CUPS))
+            
                             
                     id_ct_coord_x = row['CUPS_X']
                     id_ct_coord_y = row['CUPS_Y']
@@ -2128,6 +2395,10 @@ class Solve_Graph:
                     if df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS].sort_values(colum_hora, ascending=False).reset_index(drop=True)[colum_hora][0] > 0: 
                         # potencia_cup = float(df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS][colum_hora].reset_index(drop=True)[0])
                         potencia_cup = float(df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS].sort_values(colum_hora, ascending=False).reset_index(drop=True)[colum_hora][0])
+                        #Si estamos en la hora 24 se suma el posible valor de la hora 25 por si hay un cambio de hora.
+                        if colum_hora == 'VALOR_H24':
+                            potencia_cup += float(df_AE_fecha.loc[df_AE_fecha['CUPS'] == row.CUPS].sort_values('VALOR_H25', ascending=False).reset_index(drop=True)['VALOR_H25'][0])
+                        
                         #Cuidado con los posibles valores de potencia 'nan'.
                         if potencia_cup > 0:
                             aa = 'todo ok'
@@ -2222,6 +2493,10 @@ class Solve_Graph:
                 try:       
                     if df_AS_fecha.loc[df_AS_fecha['CUPS'] == row.CUPS].sort_values(colum_hora, ascending=False).reset_index(drop=True)[colum_hora][0] > 0:
                         potencia_cup = -1 * float(df_AS_fecha.loc[df_AS_fecha['CUPS'] == row.CUPS].sort_values(colum_hora, ascending=False).reset_index(drop=True)[colum_hora][0])
+                        #Si estamos en la hora 24 se suma el posible valor de la hora 25 por si hay un cambio de hora.
+                        if colum_hora == 'VALOR_H24':
+                            potencia_cup -= -1 * float(df_AS_fecha.loc[df_AS_fecha['CUPS'] == row.CUPS].sort_values('VALOR_H25', ascending=False).reset_index(drop=True)['VALOR_H25'][0])
+                        
                         #Cuidado con los posibles valores de potencia 'nan'.
                         if potencia_cup < 0:
                             aa = 'todo ok'
@@ -2587,7 +2862,69 @@ class Solve_Graph:
         return G, CCH_Data_Error
     
    
+    # def perdidas_trafo(self, G, trafo, AE_cch_ct, AS_cch_ct, cursor, conn, id_caso, fecha_sql, diccionario_horas, colum_hora, perdidas_trafos_CT_medido, perdidas_trafos_CT_calculado):#, save_ddbb, tabla_trafos_general):
+    def perdidas_trafo(self, G, trafo, AE_cch_ct, AS_cch_ct, error_ae_cch):#, save_ddbb, tabla_trafos_general):
+        """
+        
+        Función para calcular las pérdidas asociadas a un trafo.
+        
+        Parámetros
+        ----------
+        G : Grafo definido.
+        trafo : Identificador del CT y del transformados para el que se quieren calcular las pérdidas (Ej.: 13714_TR1).
+        AE_cch_ct : Valor de potencia (kW) entregada por el trafo a la red.
+        AS_cch_ct : Valor de potenia (kW) recibida por el trafo de la generación distribuida de clientes.
+        error_ae_cch : Si es 1 indica un error al localizar la medida en el CT. Si es 1 y no hay potencia calculada en el grafo hay que definir pérdidas en el trafo (pérdidas de vacío) como nulas, ya que el trafo estará desconectado.
+        
+        
+        Retorno
+        -------
+        perdidas_trafo_medido : Valor de pérdidas en el trafo calculado con el valor de potencia medido en los niveles de tensión de la salida del mismo.
+        perdidas_trafo_calculado :  Valor de pérdidas en el trafo calculado con el valor de potencia estimada al resolver el grafo con las cargas de los clientes y las pérdidas técnicas de la red estimadas.
+        """
+        
+        logger = logging.getLogger('perdidas_trafo')
+        
+        #Se comprueba si no hay valor medido en el trafo y la potencia calculada es 0. El trafo puede estar desconectado y no hay que calcular pérdidas en vacío para no sumarlas al CT.
+        if error_ae_cch == 1 and float(G.nodes[str(trafo)]['P_R_0'] + G.nodes[str(trafo)]['P_S_0'] + G.nodes[str(trafo)]['P_T_0']) == 0:
+            perdidas_vacio = 0
+        else:
+            perdidas_vacio = G.nodes[str(trafo)]['PERDIDAS_VACIO']
+        perdidas_corto = G.nodes[str(trafo)]['PERDIDAS_CORTO']
+        modelo = G.nodes[str(trafo)]['MODELO'].split('/')
+        pot_nominal = modelo[0]
+        indice_C_medido = float(AE_cch_ct)/float(pot_nominal)
+        indice_C_calculado = float(G.nodes[str(trafo)]['P_R_0'] + G.nodes[str(trafo)]['P_S_0'] + G.nodes[str(trafo)]['P_T_0'])/float(pot_nominal)
+        perdidas_trafo_medido = (perdidas_vacio + indice_C_medido**2 * perdidas_corto)/1000
+        perdidas_trafo_calculado = (perdidas_vacio + indice_C_calculado**2 * perdidas_corto)/1000
+        
+        # #Se suma a las variables del total del CT los valores calculados para este trafo.
+        # perdidas_trafos_CT_medido += perdidas_trafo_medido
+        # perdidas_trafos_CT_calculado += perdidas_trafo_calculado
+        
+        # ##############################################################################
+        # ## Guardado de datos en la BBDD SQL.
+        # ##############################################################################
+        # if (self.save_ddbb == 0) or (self.save_ddbb == 1) or (self.save_ddbb == 2):
+        #     #Se comprueba que exista la tabla en la BBDD
+        #     SQL_Query = pd.read_sql_query("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE table_name = '" + str(self.tabla_trafos_general) + "'", conn)
+        #     df_table_exist = pd.DataFrame(SQL_Query, columns=['TABLE_CATALOG','TABLE_SCHEMA','TABLE_NAME','TABLE_TYPE'])
     
+        #     if len(df_table_exist) > 0:
+        #         try:
+        #             instruccion_insert = "INSERT INTO " + self.tabla_trafos_general + " (ID_Caso, ID_CT, CT_NOMBRE, ID_TRAFO, Fecha, Hora, PERDIDAS_TRAFO_MEDIDO_KW, PERDIDAS_TRAFO_CALCULADO_KW) VALUES (" + str(id_caso) + ", " + str(self.id_ct) + ", '" + self.Nombre_CT + "', '" + str(trafo) + "','" + str(fecha_sql) + "', '" + diccionario_horas.get(colum_hora) + ":00:00" + "', " + str(float(perdidas_trafo_medido)) + ", " + str(float(perdidas_trafo_calculado)) + ");"
+        #             print(instruccion_insert)
+        #             # cursor.execute(instruccion_insert)
+        #             # conn.commit()
+        #         except:
+        #             logger.error('Error al guardar en la BBDD. ' + instruccion_insert)
+                    
+        #     else:
+        #         logger.error('No existe ninguna tabla con nombre ' + str(self.tabla_trafos_general) + ' en la BBDD. Ejecutar en el SQL el comando: ' + "CREATE TABLE [DEPERTEC].[dbo].[" + str(self.tabla_trafos_general) + "] (ID_Caso INT, ID_CT INT, CT_NOMBRE VARCHAR(45), ID_TRAFO VARCHAR(15), Fecha DATE, Hora TIME(7), PERDIDAS_TRAFO_KW FLOAT);")
+        #         # instruccion_create = "CREATE TABLE [DEPERTEC].[dbo].[OUTPUT_PERDIDAS_TRAFOS] (ID_Caso INT, ID_CT INT, CT_NOMBRE VARCHAR(45), ID_TRAFO VARCHAR(15), Fecha DATE, Hora TIME(7), PERDIDAS_TRAFO_KW FLOAT);"
+        #         #cursor.execute(instruccion_create)               
+        # return perdidas_trafos_CT_medido, perdidas_trafos_CT_calculado
+        return perdidas_trafo_medido, perdidas_trafo_calculado
     
 
 
@@ -2685,7 +3022,7 @@ def main(self):
         ## Creación de DataFrames con las tablas para definir el grafo.
         ## En caso de leer el grafo de un .gml o gml.gz se omite este paso.
         ##############################################################################
-        graph_data_error, df_nodos_ct, df_traza_ct, df_ct_cups_ct, df_matr_dist, LBT_ID_list, cups_agregado_CT = self.create_graph_dataframes(graph_data_error, self.archivo_topologia, self.archivo_traza, self.archivo_ct_cups)
+        graph_data_error, df_nodos_ct, df_traza_ct, df_ct_cups_ct, df_matr_dist, LBT_ID_list, cups_agregado_CT, df_info_trafos_ct = self.create_graph_dataframes(graph_data_error, self.archivo_topologia, self.archivo_traza, self.archivo_ct_cups)
         
         #Si ha habido un error que indique graph_data_error = 3 al llamar a la función anterior, habrá devuelto este valor y todo lo demás a 0. Se comprueba que varios de los parámetros son 0 y se sale de la librería.
         if graph_data_error == 3 and len(df_traza_ct) == 0 and len(df_matr_dist) == 0 and len(df_ct_cups_ct) == 0:
@@ -2702,7 +3039,7 @@ def main(self):
         G = nx.MultiGraph() #Multigrafo no dirigido. Permite añadir múltiples enlaces entre los mismos nodos, con diferentes valores en los atributos.
         
         #Se genera el grafo con los DF creados
-        G, graph_data_error = self.genera_grafo(G, df_nodos_ct, df_traza_ct, LBT_ID_list, cups_agregado_CT, dicc_colors, graph_data_error)
+        G, graph_data_error = self.genera_grafo(G, df_nodos_ct, df_traza_ct, LBT_ID_list, cups_agregado_CT, dicc_colors, graph_data_error, df_info_trafos_ct)
     
         ##############################################################################
         ## Lectura de los archivos de CUPS y asociación de CUPS con el nodo correpsondiente del grafo.
@@ -2717,7 +3054,20 @@ def main(self):
         
         #Se añade en el nodo CT un atributo que indica la calidad de los nodos del grafo:
         G.nodes[str(self.id_ct)]['Graph_ok'] = graph_data_error
-                    
+        
+        #Para el CT, cada trafo y cada nivel de tensión se calcula la longitud total de cable (en metros) aguas abajo de ese nivel de agregación.
+        for nodo1, nodo2, keys, data in G.edges(data = True, default = 0, keys=True):
+            #Cuidado con no sumar las longitudes entre cada CUPS y el nodo más cercano, ya que no se tienen en cuenta esas pérdidas en la red.
+            if G.nodes[nodo1]['Tipo_Nodo'] != 'CUPS' and G.nodes[nodo2]['Tipo_Nodo'] != 'CUPS' and G.nodes[nodo1]['Tipo_Nodo'] != 'CUPS_TR' and G.nodes[nodo2]['Tipo_Nodo'] != 'CUPS_TR':
+                #Ejemplo ALAMO 6151, que el trafo 2 solo tiene nivel de 230 y no de 400, da error en el siguiente if.
+                try:
+                    if G.nodes[str(G.edges[nodo1, nodo2, keys]['TR']) + '_' + str(G.edges[nodo1, nodo2, keys]['QBT_TENSION'])]['Num_CUPS_clientes'] > 0:
+                        G.nodes[str(self.id_ct)]['Longitud_red'] += G.edges[nodo1, nodo2, keys]['Long']
+                        G.nodes[str(self.id_ct) + '_' + str(G.edges[nodo1, nodo2, keys]['TR'])]['Longitud_red'] += G.edges[nodo1, nodo2, keys]['Long']
+                        G.nodes[str(G.edges[nodo1, nodo2, keys]['TR']) + '_' + str(G.edges[nodo1, nodo2, keys]['QBT_TENSION'])]['Longitud_red'] += G.edges[nodo1, nodo2, keys]['Long']
+                except:
+                    continue
+                                
         
         ##############################################################################
         ## Guardado de los archivos .csv modificados con la información de la red.
@@ -2812,14 +3162,16 @@ def main(self):
             logger.error('Error al generar las imágenes .jpg con la descripción del grafo en ' + plt_graph_file + ' y ' + plt_graph_file_v2)
     
     print('Graph_data_error = ' + str(graph_data_error))
-    self.update_graph_data_error(graph_data_error)
+    # self.update_graph_data_error(G, graph_data_error)
     
     if graph_data_error == 3:
         logger.critical('CREACIÓN DEL GRAFO ABORTADA. ERRORES INCOMPATIBLES CON UNA CORRECTA DEFINICIÓN.')
         print('CREACIÓN DEL GRAFO ABORTADA. ERRORES INCOMPATIBLES CON UNA CORRECTA DEFINICIÓN. Graph_data_error = ' + str(graph_data_error))
-        self.update_graph_data_error(graph_data_error)
+        self.update_graph_data_error(G, graph_data_error)
         return
         # return graph_data_error
+    else:
+        self.update_graph_data_error(G, graph_data_error)
 
     
     ##############################################################################
@@ -2932,8 +3284,6 @@ def main(self):
     
     #ELIMINAR
     print(cups_agregado_CT)
-    # return
-    # time.sleep(3)
     
     
     ##############################################################################
@@ -2945,7 +3295,9 @@ def main(self):
     
     #Se leen las curvas de carga del mes correspondiente al primer día. Después se actualizará si se cambia de mes.
     df_cch, df_cch_AE_giss, df_cch_AS_giss = self.get_cch_cups(fecha, self.ruta_cch, cups_grafo)
-    
+    #Se eliminan los valores NAN de la columna 25 para poder sumarlos a la columna 24
+    df_cch_AE_giss.VALOR_H25.fillna(0,inplace=True)
+    df_cch_AS_giss.VALOR_H25.fillna(0,inplace=True)
 
     while fecha_datetime < self.fecha_fin + datetime.timedelta(days=1):
         fecha = int(str(fecha_datetime.strftime("%Y")) + str(fecha_datetime.strftime("%m")) + str(fecha_datetime.strftime("%d")))
@@ -2954,6 +3306,9 @@ def main(self):
         if fecha_datetime > self.fecha_ini and (fecha_datetime - datetime.timedelta(days=1)).month != fecha_datetime.month:
             del df_cch, df_cch_AE_giss, df_cch_AS_giss
             df_cch, df_cch_AE_giss, df_cch_AS_giss = self.get_cch_cups(fecha, self.ruta_cch, cups_grafo)
+            #Se eliminan los valores NAN de la columna 25 para poder sumarlos a la columna 24
+            df_cch_AE_giss.VALOR_H25.fillna(0,inplace=True)
+            df_cch_AS_giss.VALOR_H25.fillna(0,inplace=True)
 
         ##############################################################################  
         ## Filtrado de las curvas de carga.
@@ -2981,6 +3336,9 @@ def main(self):
         df_AE = df_AE.drop_duplicates(keep = 'first').reset_index(drop=True)
         
         df_AE_fecha = df_AE[df_AE['FECHA'] == fecha].reset_index(drop=True)
+        #Se eliminan los valores NAN de la columna 25 para poder sumarlos a la columna 24
+        df_AE_fecha.VALOR_H25.fillna(0,inplace=True)
+        # df_AE_fecha.VALOR_H24 = df_AE_fecha.VALOR_H24+df_AE_fecha.VALOR_H25
         
         
         #Potencia suministrada (autoconsumo). AS
@@ -3003,6 +3361,8 @@ def main(self):
         df_AS = df_AS.drop_duplicates(keep = 'first').reset_index(drop=True)
         
         df_AS_fecha = df_AS[df_AS['FECHA'] == fecha].reset_index(drop=True)
+        #Se eliminan los valores NAN de la columna 25 para poder sumarlos a la columna 24
+        df_AS_fecha.VALOR_H25.fillna(0,inplace=True)
         
         
         ##TEMPORAL
@@ -3093,7 +3453,8 @@ def main(self):
                 AS_medida_ct = df_cch_AS_giss.loc[(df_cch_AS_giss['CODIGO_LVC'].str.find(str(self.id_ct).zfill(5)) >= 0) & (df_cch_AS_giss['FECHA'] == fecha)].reset_index(drop=True)
                 
                 #Método para obtener los resultados requeridos según CT, TR y nivel de tensión (05-2021)
-                lista_nodos_resultados = [str(self.id_ct)]
+                # lista_nodos_resultados = [str(self.id_ct)]
+                lista_nodos_resultados = []
                 lista_temp = list(np.unique(list(G.edges(str(self.id_ct)))))
                 lista_temp.remove(str(self.id_ct))
                 lista_nodos_resultados = lista_nodos_resultados + lista_temp
@@ -3105,6 +3466,14 @@ def main(self):
                         if G.nodes[j]['Tipo_Nodo'] != 'CUPS_TR':
                             lista_nodos_resultados.append(j)
                 del lista_temp, lista_temp2
+                #Se añade el id_ct al final para que sea el último nodo que se recorra en el siguiente for.
+                lista_nodos_resultados.append(str(self.id_ct))
+                
+                #Se inicializan dos variables para contabilizar el total de pérdidas en trafos del CT.
+                perdidas_trafos_CT_medido = 0
+                perdidas_trafos_CT_calculado = 0
+                perdidas_trafo_medido = 0
+                perdidas_trafo_calculado = 0
                 
                 #Se recorren los nodos de la lista hallada para ir calculando las cargas conectadas, pérdidas y el medido en el CT aguas abajo de cada uno de ellos.
                 for row in lista_nodos_resultados:
@@ -3120,6 +3489,19 @@ def main(self):
                     AS_S_vanos_tot = 0
                     AS_T_vanos_tot = 0
                     
+                    #Variables para el CT completo. Necesario definirlas por separado para sumer las pérdidas en los trafos al terminar
+                    # AE_R_vanos_def = 0
+                    # Q_R_vanos_def = 0
+                    # AE_S_vanos_def = 0
+                    # Q_S_vanos_def = 0
+                    # AE_T_vanos_def = 0
+                    # Q_T_vanos_def = 0
+                    
+                    # AS_R_vanos_def = 0
+                    # AS_S_vanos_def = 0
+                    # AS_T_vanos_def = 0
+                    
+                    
                     # Se calcula el agregado total de las curvas de carga
                     P_R_carga_tot = 0
                     Q_R_carga_tot = 0
@@ -3127,6 +3509,15 @@ def main(self):
                     Q_S_carga_tot = 0
                     P_T_carga_tot = 0
                     Q_T_carga_tot = 0
+                    
+                    #Variables para el CT completo. Necesario definirlas por separado para sumer las pérdidas en los trafos al terminar
+                    # P_R_carga_def = 0
+                    # Q_R_carga_def = 0
+                    # P_S_carga_def= 0
+                    # Q_S_carga_def = 0
+                    # P_T_carga_def = 0
+                    # Q_T_carga_def = 0
+                    
                     
                     P_R_CT_tot = G.nodes[str(row)]['P_R_0']
                     Q_R_CT_tot = G.nodes[str(row)]['Q_R_0']
@@ -3138,6 +3529,18 @@ def main(self):
                     #Pérdidas medidas en el CT/trafo/nivel de tensión
                     AE_cch_ct = 0
                     AS_cch_ct = 0
+                    
+                    #Al llegar a la hora 24 ya estamos en el día siguiente y se suma 1 a la fecha para guardar correctamente el valor.
+                    #Identificador del caso para el SQL. Generar antes de entrar a analizar los nodos para poder guardar las pérdidas de los trafos.
+                    id_caso = int(str(fecha) + str(diccionario_horas.get(colum_hora)))
+                    fecha_sql = fecha
+                    if colum_hora == 'VALOR_H24':
+                    #     fecha_datetime = fecha_datetime + datetime.timedelta(days=1)
+                    #     fecha = int(str(fecha_datetime.strftime("%Y")) + str(fecha_datetime.strftime("%m")) + str(fecha_datetime.strftime("%d")))
+                        fecha_sql = int(str((fecha_datetime + datetime.timedelta(days=1)).strftime("%Y")) + str((fecha_datetime + datetime.timedelta(days=1)).strftime("%m")) + str((fecha_datetime + datetime.timedelta(days=1)).strftime("%d")))
+                        # id_caso = int(str(int(str((fecha_datetime + datetime.timedelta(days=1)).strftime("%Y")) + str((fecha_datetime + datetime.timedelta(days=1)).strftime("%m")) + str((fecha_datetime + datetime.timedelta(days=1)).strftime("%d")))) + str(diccionario_horas.get(colum_hora)))
+                        id_caso = int(str(fecha_sql) + str(diccionario_horas.get(colum_hora)))
+                        
             
                     #Si es un nodo de salida de tensión de trafo
                     if str(row).find('_230') >= 0 or str(row).find('_400') >= 0:
@@ -3145,6 +3548,9 @@ def main(self):
                         if int(G.nodes[row]['QBT_TENSION']) == 230:
                             try:
                                 AE_cch_ct = AE_medida_ct.loc[AE_medida_ct.CODIGO_LVC.str.find(str(G.nodes[row]['TR'].replace('R','') + '1')) >= 0][colum_hora].sum()
+                                #Si estamos en la hora 24 se suma el posible valor de la hora 25 por si hay un cambio de hora.
+                                if colum_hora == 'VALOR_H24':
+                                    AE_cch_ct += AE_medida_ct.loc[AE_medida_ct.CODIGO_LVC.str.find(str(G.nodes[row]['TR'].replace('R','') + '1')) >= 0]['VALOR_H24'].sum()
                                 if AE_cch_ct > 0:
                                     aa = 'Todo ok'
                                     del aa
@@ -3152,6 +3558,9 @@ def main(self):
                                 AE_cch_ct = 0
                             try:
                                 AS_cch_ct = AS_medida_ct.loc[AS_medida_ct.CODIGO_LVC.str.find(str(G.nodes[row]['TR'].replace('R','') + '1')) >= 0][colum_hora].sum()
+                                #Si estamos en la hora 24 se suma el posible valor de la hora 25 por si hay un cambio de hora.
+                                if colum_hora == 'VALOR_H24':
+                                    AS_cch_ct += AS_medida_ct.loc[AS_medida_ct.CODIGO_LVC.str.find(str(G.nodes[row]['TR'].replace('R','') + '1')) >= 0]['VALOR_H25'].sum()
                                 if AS_cch_ct > 0:
                                     aa = 'Todo ok'
                                     del aa
@@ -3162,6 +3571,9 @@ def main(self):
                         elif int(G.nodes[row]['QBT_TENSION']) == 400:
                             try:
                                 AE_cch_ct = AE_medida_ct.loc[AE_medida_ct.CODIGO_LVC.str.find(str(G.nodes[row]['TR'].replace('R','') + '2')) >= 0][colum_hora].sum()
+                                #Si estamos en la hora 24 se suma el posible valor de la hora 25 por si hay un cambio de hora.
+                                if colum_hora == 'VALOR_H24':
+                                    AE_cch_ct += AE_medida_ct.loc[AE_medida_ct.CODIGO_LVC.str.find(str(G.nodes[row]['TR'].replace('R','') + '2')) >= 0]['VALOR_H25'].sum()    
                                 if AE_cch_ct > 0:
                                     aa = 'Todo ok'
                                     del aa
@@ -3169,6 +3581,9 @@ def main(self):
                                 AE_cch_ct = 0
                             try:
                                 AS_cch_ct = AS_medida_ct.loc[AS_medida_ct.CODIGO_LVC.str.find(str(G.nodes[row]['TR'].replace('R','') + '2')) >= 0][colum_hora].sum()
+                                #Si estamos en la hora 24 se suma el posible valor de la hora 25 por si hay un cambio de hora.
+                                if colum_hora == 'VALOR_H24':
+                                    AS_cch_ct = AS_medida_ct.loc[AS_medida_ct.CODIGO_LVC.str.find(str(G.nodes[row]['TR'].replace('R','') + '2')) >= 0]['VALOR_H25'].sum()    
                                 if AS_cch_ct > 0:
                                     aa = 'Todo ok'
                                     del aa
@@ -3228,15 +3643,15 @@ def main(self):
                         try:
                             AE_cch_ct =  AE_medida_ct[colum_hora].sum()
                             if AE_cch_ct > 0:
-                                aa = 'Todo ok'
-                                del aa
+                                #Si hay valor AE que llega al CT, se le suman las pérdidas de los trafos.
+                                AE_cch_ct += perdidas_trafos_CT_medido
                         except:
                             AE_cch_ct = 0
                         try:
                             AS_cch_ct = AS_medida_ct[colum_hora].sum()
                             if AS_cch_ct > 0:
-                                aa = 'Todo ok'
-                                del aa
+                                #Si hay valor AS que llega al CT, se le restan las pérdidas de los trafos.
+                                AS_cch_ct -= perdidas_trafos_CT_medido
                         except:
                             AS_cch_ct = 0
                                 
@@ -3270,10 +3685,23 @@ def main(self):
                             except:
                                 pass
                             
+                        #Se suman las pérdidas del trafo a los valores de pérdidas técnicas calculados
+                        #SE SUMAN LAS PÉRDIDAS ASOCIADAS AL VALOR MEDIDO, YA QUE SE SUPONE QUE ES MÁS FIABLE
+                        AE_R_vanos_tot += perdidas_trafos_CT_medido/3
+                        AE_S_vanos_tot += perdidas_trafos_CT_medido/3
+                        AE_T_vanos_tot += perdidas_trafos_CT_medido/3
+                        
+                        #Se suman las pérdidas del trafo a los valores calculados de potencia:
+                        P_R_CT_tot += perdidas_trafos_CT_medido/3
+                        P_S_CT_tot += perdidas_trafos_CT_medido/3
+                        P_T_CT_tot += perdidas_trafos_CT_medido/3
+
+                            
                         #Para obtener la carga conectada:
                         for nodo, data in G.nodes(data = True, default = 0):
                             #Se filtran solo para considerar los CUPS
                             if data['Tipo_Nodo'] == 'CUPS':
+                                # Se suman las pérdidas de los trafos divididas entre 3, para repartirlo entre cada fase.
                                 P_R_carga_tot += data['P_R_0']
                                 Q_R_carga_tot += data['Q_R_0']
                                 P_S_carga_tot += data['P_S_0']
@@ -3281,10 +3709,12 @@ def main(self):
                                 P_T_carga_tot += data['P_T_0']
                                 Q_T_carga_tot += data['Q_T_0']   
                                 
-                        codigo_LVC = 'CT'    
+                        codigo_LVC = 'CT'  
+                        # continue
                     
                     #Si es un nodo que representa a un trafo (ni tendrá _230 o _400 ni TR=='CT')
                     else:
+                        error_ae_cch = 0 #Controla si hay un error al buscar la medida en el trafo. Si no se encuentra el dato puede indicar que el trafo está deconectado y no hay que calcular pérdidas en vacío.
                         try:
                             AE_cch_ct = AE_medida_ct.loc[AE_medida_ct.CODIGO_LVC.str.find(str(row).replace('_TR','T')) >= 0][colum_hora].sum()
                             if AE_cch_ct > 0:
@@ -3292,6 +3722,7 @@ def main(self):
                                 del aa
                         except:
                             AE_cch_ct = 0
+                            error_ae_cch = 1
                         try:
                             AS_cch_ct = AS_medida_ct.loc[AS_medida_ct.CODIGO_LVC.str.find(str(row).replace('_TR','T')) >= 0][colum_hora].sum()
                             if AS_cch_ct > 0:
@@ -3299,7 +3730,7 @@ def main(self):
                                 del aa
                         except:
                             AS_cch_ct = 0
-                            
+                        
                         # codigo_LVC = row
                         #Para obtener todas las pérdidas asociadas:
                         for nodo1, nodo2, keys, data in G.edges(data = True, default = 0, keys=True):
@@ -3344,6 +3775,40 @@ def main(self):
                                 
                         codigo_LVC = row #'TRAFO'
                         
+                        #Se llama a la función que crea y guarda las pérdidas en el trafo, solo si se quieren guardar la información en el SQL.
+                        # if (self.save_ddbb == 0) or (self.save_ddbb == 1) or (self.save_ddbb == 2):
+                        try:
+                            # perdidas_trafos_CT_medido, perdidas_trafos_CT_calculado = self.perdidas_trafo(G, row, AE_cch_ct, AS_cch_ct, cursor, conn, id_caso, fecha_sql, diccionario_horas, colum_hora, perdidas_trafos_CT_medido, perdidas_trafos_CT_calculado)#, self.save_ddbb, self.tabla_trafos_general)
+                            perdidas_trafo_medido, perdidas_trafo_calculado = self.perdidas_trafo(G, row, AE_cch_ct, AS_cch_ct, error_ae_cch)#, self.save_ddbb, self.tabla_trafos_general)
+                            
+                            #Se suma a las variables del total del CT los valores calculados para este trafo.
+                            perdidas_trafos_CT_medido += perdidas_trafo_medido
+                            perdidas_trafos_CT_calculado += perdidas_trafo_calculado
+                            ##############################################################################
+                            ## Guardado de datos en la BBDD SQL.
+                            ##############################################################################
+                            if (self.save_ddbb == 0) or (self.save_ddbb == 1) or (self.save_ddbb == 2):
+                                #Se comprueba que exista la tabla en la BBDD
+                                SQL_Query = pd.read_sql_query("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE table_name = '" + str(self.tabla_trafos_general) + "'", conn)
+                                df_table_exist = pd.DataFrame(SQL_Query, columns=['TABLE_CATALOG','TABLE_SCHEMA','TABLE_NAME','TABLE_TYPE'])
+                        
+                                if len(df_table_exist) > 0:
+                                    try:
+                                        instruccion_insert = "INSERT INTO " + self.tabla_trafos_general + " (ID_Caso, ID_CT, CT_NOMBRE, ID_TRAFO, Fecha, Hora, PERDIDAS_TRAFO_MEDIDO_KW, PERDIDAS_TRAFO_CALCULADO_KW) VALUES (" + str(id_caso) + ", " + str(self.id_ct) + ", '" + self.Nombre_CT + "', '" + str(row) + "','" + str(fecha_sql) + "', '" + diccionario_horas.get(colum_hora) + ":00:00" + "', " + str(float(perdidas_trafo_medido)) + ", " + str(float(perdidas_trafo_calculado)) + ");"
+                                        # print(instruccion_insert)
+                                        cursor.execute(instruccion_insert)
+                                        conn.commit()
+                                    except:
+                                        logger.error('Error al guardar en la BBDD. ' + instruccion_insert)
+                                        
+                                else:
+                                    logger.error('No existe ninguna tabla con nombre ' + str(self.tabla_trafos_general) + ' en la BBDD. Ejecutar en el SQL el comando: ' + "CREATE TABLE [DEPERTEC].[dbo].[" + str(self.tabla_trafos_general) + "] (ID_Caso INT, ID_CT INT, CT_NOMBRE VARCHAR(45), ID_TRAFO VARCHAR(15), Fecha DATE, Hora TIME(7), PERDIDAS_TRAFO_KW FLOAT);")
+                                    # instruccion_create = "CREATE TABLE [DEPERTEC].[dbo].[OUTPUT_PERDIDAS_TRAFOS] (ID_Caso INT, ID_CT INT, CT_NOMBRE VARCHAR(45), ID_TRAFO VARCHAR(15), Fecha DATE, Hora TIME(7), PERDIDAS_TRAFO_KW FLOAT);"
+                                    #cursor.execute(instruccion_create)
+                        except:
+                            logger.error('Imposible calcular o guardar las pérdidas en el trafo ' + str(row))
+                        
+                        
                         
                     if P_R_carga_tot == 0 or P_S_carga_tot == 0 or P_T_carga_tot == 0:
                         logger.warning('La potencia total agregada en los CUPS es es 0 en alguna de las fases (R, S, T): ' + str(P_R_carga_tot) + ', ' + str(P_S_carga_tot) + ', ' + str(P_T_carga_tot))
@@ -3368,16 +3833,16 @@ def main(self):
                             CCH_Data_Error = 3 #Otros casos
                             
                       
-                    #Al llegar a la hora 24 ya estamos en el día siguiente y se suma 1 a la fecha para guardar correctamente el valor.
-                    #Identificador del caso para el SQL
-                    id_caso = int(str(fecha) + str(diccionario_horas.get(colum_hora)))
-                    fecha_sql = fecha
-                    if colum_hora == 'VALOR_H24':
-                    #     fecha_datetime = fecha_datetime + datetime.timedelta(days=1)
-                    #     fecha = int(str(fecha_datetime.strftime("%Y")) + str(fecha_datetime.strftime("%m")) + str(fecha_datetime.strftime("%d")))
-                        fecha_sql = int(str((fecha_datetime + datetime.timedelta(days=1)).strftime("%Y")) + str((fecha_datetime + datetime.timedelta(days=1)).strftime("%m")) + str((fecha_datetime + datetime.timedelta(days=1)).strftime("%d")))
-                        # id_caso = int(str(int(str((fecha_datetime + datetime.timedelta(days=1)).strftime("%Y")) + str((fecha_datetime + datetime.timedelta(days=1)).strftime("%m")) + str((fecha_datetime + datetime.timedelta(days=1)).strftime("%d")))) + str(diccionario_horas.get(colum_hora)))
-                        id_caso = int(str(fecha_sql) + str(diccionario_horas.get(colum_hora)))
+                    # #Al llegar a la hora 24 ya estamos en el día siguiente y se suma 1 a la fecha para guardar correctamente el valor.
+                    # #Identificador del caso para el SQL. Generar antes de entrar a analizar los nodos para poder guardar las pérdidas de los trafos.
+                    # id_caso = int(str(fecha) + str(diccionario_horas.get(colum_hora)))
+                    # fecha_sql = fecha
+                    # if colum_hora == 'VALOR_H24':
+                    # #     fecha_datetime = fecha_datetime + datetime.timedelta(days=1)
+                    # #     fecha = int(str(fecha_datetime.strftime("%Y")) + str(fecha_datetime.strftime("%m")) + str(fecha_datetime.strftime("%d")))
+                    #     fecha_sql = int(str((fecha_datetime + datetime.timedelta(days=1)).strftime("%Y")) + str((fecha_datetime + datetime.timedelta(days=1)).strftime("%m")) + str((fecha_datetime + datetime.timedelta(days=1)).strftime("%d")))
+                    #     # id_caso = int(str(int(str((fecha_datetime + datetime.timedelta(days=1)).strftime("%Y")) + str((fecha_datetime + datetime.timedelta(days=1)).strftime("%m")) + str((fecha_datetime + datetime.timedelta(days=1)).strftime("%d")))) + str(diccionario_horas.get(colum_hora)))
+                    #     id_caso = int(str(fecha_sql) + str(diccionario_horas.get(colum_hora)))
 
                         
                     print('\n' + self.Nombre_CT + ' ' + str(fecha) + ' ' + colum_hora)
@@ -3386,9 +3851,10 @@ def main(self):
                     print('Total AE MEDIDO en el CT - ' + str(row) + ' (kW): ' + str(AE_cch_ct))
                     print('Total AS MEDIDO en el CT - ' + str(row) + ' (kW): ' + str(AS_cch_ct))
                     print('Total CALCULADO en el CT (curvas de carga + pérdidas) ' + str(row) + ' (kW): ' + str(P_R_CT_tot + P_S_CT_tot + P_T_CT_tot))
-                    print(str(G.nodes[str(row)]['P_R_0']), str(G.nodes[str(row)]['P_S_0']), str(G.nodes[str(row)]['P_T_0']))
+                    # print(str(G.nodes[str(row)]['P_R_0']), str(G.nodes[str(row)]['P_S_0']), str(G.nodes[str(row)]['P_T_0']))
+                    print(str(P_R_CT_tot), str(P_S_CT_tot), str(P_T_CT_tot))
                     print('Total cargas conectadas (R, S, T): ', P_R_carga_tot, P_S_carga_tot, P_T_carga_tot, ' kW (' +  str(P_R_carga_tot + P_S_carga_tot + P_T_carga_tot) + '), ', Q_R_carga_tot, Q_S_carga_tot, Q_T_carga_tot, 'kVAR')
-                    print('Suma total curvas de carga clientes: ' + str(df_AE_fecha[colum_hora].sum()))
+                    # print('Suma total curvas de carga clientes: ' + str(df_AE_fecha[colum_hora].sum()))
                     print('CCH_Data_Error: ' + str(CCH_Data_Error))
                     print('CCH + pérdidas: ' + str(P_R_carga_tot + P_S_carga_tot + P_T_carga_tot + AE_R_vanos_tot + AE_S_vanos_tot + AE_T_vanos_tot))
                 
@@ -3481,12 +3947,7 @@ def main(self):
                         instruccion_create = "CREATE TABLE [DEPERTEC].[dbo].[" + str(tabla_ct_trazas) + "] (ID_Caso INT, ID_NODO_LBT_ID_INI VARCHAR(45), ID_NODO_LBT_ID_FIN VARCHAR(45), Fecha DATE, Hora TIME(7), P_R_LINEA_KW FLOAT, P_S_LINEA_KW FLOAT, P_T_LINEA_KW FLOAT);"
                         #cursor.execute(instruccion_create)
                     del df_table_exist
-                        
-                #Se cierra la conexión SQL
-                if (self.save_ddbb == 0) or (self.save_ddbb == 1) or (self.save_ddbb == 2):
-                    cursor.close()
-                    del cursor
-        
+
                 # if (self.save_ddbb == 0):
                 #     logger.debug(str(colum_hora) + ' guardado correctamente en la BBDD en todas las tablas.')
                 # elif (self.save_ddbb == 1):
@@ -3495,7 +3956,36 @@ def main(self):
                 #     logger.debug(str(colum_hora) + ' guardado correctamente en la BBDD, pero únicamente en las tablas de cada CT con todos los datos del grafo: ' + tabla_ct_nodos + ', ' + tabla_ct_trazas + '. NO EN LA TABLA GENERAL DE AGREGADO CT: ' + self.tabla_cts_general)
                 # if (self.save_ddbb >= 3) or (self.save_ddbb < 0):
                 #     logger.warning('Ningún dato guardado en la BBDD. Cambiar variable "save_ddbb" para guardar.')
-
+            
+            
+                ##############################################################################
+                ## Guardado de las pérdidas en los trafos de todo el CT en la BBDD SQL.
+                ##############################################################################
+                if (self.save_ddbb == 0) or (self.save_ddbb == 1) or (self.save_ddbb == 2):
+                    #Se comprueba que exista la tabla en la BBDD
+                    SQL_Query = pd.read_sql_query("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE table_name = '" + str(self.tabla_trafos_general) + "'", conn)
+                    df_table_exist = pd.DataFrame(SQL_Query, columns=['TABLE_CATALOG','TABLE_SCHEMA','TABLE_NAME','TABLE_TYPE'])
+            
+                    if len(df_table_exist) > 0:
+                        try:
+                            instruccion_insert = "INSERT INTO " + self.tabla_trafos_general + " (ID_Caso, ID_CT, CT_NOMBRE, ID_TRAFO, Fecha, Hora, PERDIDAS_TRAFO_MEDIDO_KW, PERDIDAS_TRAFO_CALCULADO_KW) VALUES (" + str(id_caso) + ", " + str(self.id_ct) + ", '" + self.Nombre_CT + "', 'CT','" + str(fecha_sql) + "', '" + diccionario_horas.get(colum_hora) + ":00:00" + "', " + str(float(perdidas_trafos_CT_medido)) + ", " + str(float(perdidas_trafos_CT_calculado)) + ");"
+                            # print(instruccion_insert)
+                            cursor.execute(instruccion_insert)
+                            conn.commit()
+                        except:
+                            logger.error('Error al guardar en la BBDD. ' + instruccion_insert)
+                            
+                    else:
+                        logger.error('No existe ninguna tabla con nombre ' + str(self.tabla_trafos_general) + ' en la BBDD. Ejecutar en el SQL el comando: ' + "CREATE TABLE [DEPERTEC].[dbo].[" + str(self.tabla_trafos_general) + "] (ID_Caso INT, ID_CT INT, CT_NOMBRE VARCHAR(45), ID_TRAFO VARCHAR(15), Fecha DATE, Hora TIME(7), PERDIDAS_TRAFO_KW FLOAT);")
+                        # instruccion_create = "CREATE TABLE [DEPERTEC].[dbo].[OUTPUT_PERDIDAS_TRAFOS] (ID_Caso INT, ID_CT INT, CT_NOMBRE VARCHAR(45), ID_TRAFO VARCHAR(15), Fecha DATE, Hora TIME(7), PERDIDAS_TRAFO_KW FLOAT);"
+                        
+                
+                #Se cierra la conexión SQL
+                if (self.save_ddbb == 0) or (self.save_ddbb == 1) or (self.save_ddbb == 2):
+                    cursor.close()
+                    del cursor
+                        #cursor.execute(instruccion_create)
+                        
         fecha_datetime = fecha_datetime + datetime.timedelta(days=1)
     
     logger.info('Fin de la ejecución: ' + str(time.strftime("%d/%m/%y")) + ' a las ' + str(time.strftime("%H:%M:%S")))

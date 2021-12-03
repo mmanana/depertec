@@ -34,15 +34,17 @@ fecha_fin=datetime.datetime(2020, 1, 31)
 ## FILES READING
 ##############################################################################
 ruta_raiz = os.path.dirname(os.path.abspath(__file__)) + '\\'         #Directorio donde está el .py, las librerías y los archivos
-#Archivos de topología, trazas y CUPS del CT
+#Archivos de topología, trazas y CUPS del CT, y archivo con la info de los trafos de BT.
 archivo_topologia = ruta_raiz + r'Fichero_TOPOLOGIA_DEPERTEC.csv'
 archivo_traza = ruta_raiz + r'Fichero_TRAZA_DEPERTEC.csv'
 archivo_ct_cups = ruta_raiz + r'Fichero_CT_CUPS_DEPERTEC.csv'
+archivo_trafos_mt_bt = ruta_raiz + r'Transformadores MT-BT (1).csv'
 
 ruta_raiz2='F:\GTEA\DEPERTEC\Ficheros_Piloto_de_Validacion\\'
 archivo_topologia = ruta_raiz2 + r'20210204_TOPOLOGIA.csv'#Fichero_TOPOLOGIA_DEPERTEC.csv'
 archivo_traza = ruta_raiz2 + r'20210204_TRAZA.csv'#Fichero_TRAZA_DEPERTEC.csv'
 archivo_ct_cups = ruta_raiz2 + r'20210204_CT_CUPS.csv'#Fichero_CT_CUPS_DEPERTEC.csv'
+archivo_trafos_mt_bt = ruta_raiz2 + r'Transformadores MT-BT (1).csv'
 
 
 #Ruta donde se encuentran todos los archivos de curvas de carga.
@@ -81,14 +83,15 @@ save_plt_graph = 0
 #Parámetros para estimar el error cometido al calcular las pérdidas.
 #Si el valor de curvas de carga + pérdidas está ligeramente por debajo (limite_inferior) o ligeramente por encima (limite_superior) del valor medido en el CT se considera aceptable.
 upper_limit = 10 #% permitido para considerar un valor aceptable de cch+pérdidas, por encima del valor medido en el CT
-lower_limit = 10 #% permitido para considerar un valor aceptable de cch+pérdidas, por debajo delvalor medido en el CT
+lower_limit = 10 #% permitido para considerar un valor aceptable de cch+pérdidas, por debajo del valor medido en el CT
 
 
 ## SQL INFORMATION
 tabla_cts_general = "OUTPUT_PERDIDAS_AGREGADOS_CT"
+tabla_trafos_general = "OUTPUT_PERDIDAS_TRAFOS"
 save_ddbb = 1
 # 0 = Guardar todos los resultados en todas las tablas.
-# 1 = Guardar solo en la tabla de agregados CT.
+# 1 = Guardar solo en la tabla de agregados CT y de trafos.
 # 2 = Guardar solo en las tablas generales de cada CT con todos los datos del grafo, sin agregados CT.
 # 3 = NO guardar nada.
 
@@ -114,7 +117,10 @@ with codecs.open(archivo_CTs, 'r', encoding='utf-8') as reader:
             if Nombre_CT != 'FIN':
                 #Ruta y nombre del archivo de logout.
                 ruta_log = ruta_raiz + 'log_files/Log_' + Nombre_CT.replace(' ', '_') + '_' + str(id_ct) + '_DEPERTEC.log'
-                ga.Solve_Graph(fecha_ini=fecha_ini, fecha_fin=fecha_fin, Nombre_CT=Nombre_CT, id_ct=id_ct, archivo_topologia=archivo_topologia, archivo_traza=archivo_traza, archivo_ct_cups=archivo_ct_cups, ruta_cch=ruta_cch, archivo_config=archivo_config, ruta_log=ruta_log, V_Linea_400=V_Linea_400, V_Linea_230 = V_Linea_230, X_cable=X_cable, temp_cables=temp_cables, use_gml_file=use_gml_file, save_csv_mod=save_csv_mod, save_plt_graph=save_plt_graph, save_ddbb=save_ddbb, tabla_cts_general=tabla_cts_general, log_mode=log_mode, upper_limit=upper_limit, lower_limit=lower_limit)
+                ga.Solve_Graph(fecha_ini=fecha_ini, fecha_fin=fecha_fin, Nombre_CT=Nombre_CT, id_ct=id_ct, archivo_topologia=archivo_topologia, archivo_traza=archivo_traza, archivo_ct_cups=archivo_ct_cups, archivo_trafos_mt_bt=archivo_trafos_mt_bt, ruta_cch=ruta_cch, archivo_config=archivo_config, ruta_log=ruta_log, V_Linea_400=V_Linea_400, V_Linea_230 = V_Linea_230, X_cable=X_cable, temp_cables=temp_cables, use_gml_file=use_gml_file, save_csv_mod=save_csv_mod, save_plt_graph=save_plt_graph, save_ddbb=save_ddbb, tabla_cts_general=tabla_cts_general, tabla_trafos_general=tabla_trafos_general, log_mode=log_mode, upper_limit=upper_limit, lower_limit=lower_limit)
+                fecha_datetime = fecha_ini
+                ga.Solve_Graph(fecha_ini=fecha_ini, fecha_fin=fecha_fin, fecha_datetime=fecha_datetime, Nombre_CT=Nombre_CT, id_ct=id_ct, ruta_raiz = ruta_raiz, archivo_topologia=archivo_topologia, archivo_traza=archivo_traza, archivo_ct_cups=archivo_ct_cups, ruta_cch=ruta_cch, archivo_config=archivo_config, ruta_log=ruta_log, V_Linea=V_Linea_400, X_cable=X_cable, temp_cables=temp_cables, use_gml_file=use_gml_file, save_csv_mod=save_csv_mod, save_plt_graph=save_plt_graph, guardado_bbdd=save_ddbb, tabla_cts_general=tabla_cts_general, log_mode=log_mode)
+                
 
         except:
             pass
